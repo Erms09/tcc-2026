@@ -2,6 +2,6 @@
 Repositório do TCC
 
 Integrantes:
-David Souza
-Emanuel Roberto
+David Souza,
+Emanuel Roberto,
 Samuel Victor
