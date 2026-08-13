@@ -1,0 +1,15 @@
+Fraquezas — como vou resolver
+
+Marca desconhecida no mercado — Vou aproveitar minha vitrine gratuita para desenvolvedores: oferecer o produto de graça ou com um plano freemium generoso no início, para gerar casos de uso reais, depoimentos e prova social. Vou buscar parcerias com comunidades de devs (Discord, fóruns, eventos de jogos nacionais) para ganhar tração boca a boca antes de investir pesado em marketing pago.
+
+Dependência de APIs de terceiros — Sei que isso é um risco estrutural, não só de marca. Vou mapear quais APIs são críticas e ter pelo menos um plano B (provedor alternativo) para as mais essenciais. Também vou abstrair essas integrações numa camada própria do meu sistema, para que trocar de fornecedor não signifique reescrever tudo.
+
+Limitação da equipe (desenvolvimento individual/pequeno) — Vou priorizar implacavelmente: focar meu esforço no módulo de automação via IA, que é meu diferencial competitivo, e evitar me espalhar em features secundárias. Vou automatizar o que puder do meu próprio processo de desenvolvimento (CI/CD, testes) para render mais tempo útil. Se possível, vou buscar um cofundador técnico ou colaboradores freelance pontuais para reduzir o risco de depender só de mim.
+
+Ameaças — como vou lidar
+
+Domínio do mercado por lojas tradicionais — Não vou tentar competir de frente; vou ocupar um nicho que as grandes lojas não atendem bem, como visibilidade para devs independentes de jogos nacionais. Ser "o lugar" de um nicho específico é mais defensável do que tentar ser genérico.
+
+Mudanças de políticas e custos em APIs de IA e redes sociais — Vou tratar isso como risco operacional recorrente: monitorar os anúncios dos provedores, manter contratos/planos com certa flexibilidade, e evitar deixar qualquer funcionalidade central 100% amarrada a uma única API sem alternativa.
+
+Resistência de pagamentos por automação — Sei que isso costuma vir de o valor não estar claro. Vou oferecer um período de teste ou um tier gratuito que mostre resultado antes de cobrar, e vou comunicar o ganho de tempo/alcance de forma bem concreta (ex: "X posts automáticos por semana economizam Y horas").
