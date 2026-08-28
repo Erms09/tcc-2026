@@ -1,31 +1,33 @@
-import { Router } from "express";
-import { supabase } from "../config/supabase.js";
+import { Router } from 'express';
+import { supabase } from '../config/supabase.js';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
-router.post("/usuarios", async (req, res) => {
+router.post('/usuarios', async (req, res) => {
   const { nome, email, senha } = req.body;
+  const senhaHash = await bcrypt.hash(senha, 10);
 
   const { data, error } = await supabase
-    .from("usuarios")
+    .from('usuarios')
     .insert({
       nome: nome,
       email: email,
-      senha: senha
+      senha: senhaHash
     })
     .select()
     .single();
 
   if (error) {
-    console.error("Erro ao cadastrar usuário:", error);
+    console.error('Erro ao cadastrar usuário:', error);
 
     return res.status(500).json({
-      mensagem: "Erro ao cadastrar usuário"
+      mensagem: 'Erro ao cadastrar usuário'
     });
   }
 
   res.status(201).json({
-    mensagem: "Usuário cadastrado com sucesso!",
+    mensagem: 'Usuário cadastrado com sucesso!',
     usuario: data
   });
 });
