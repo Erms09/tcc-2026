@@ -5,24 +5,24 @@ import bcrypt from 'bcrypt';
 const router = Router();
 
 // Validação do Cadastro
-  function validarUsuario(nome: string, email: string, senha: string) {
-    
-  if (!nome.trim()) {
+function validarCadastro(nome: string, email: string, senha: string) {
+
+  if (!nome?.trim()) {
     return 'Nome é obrigatório!';
   }
-  if (!email.trim()) {
+  if (!email?.trim()) {
     return 'Email é obrigatório!';
   }
 
-  if(email.includes('@') || email.includes('.')){
+  if (email.includes('@') || email.includes('.')) {
     return 'Email inválido!'
   }
 
-  if (!senha.trim()) {
+  if (!senha?.trim()) {
     return 'Senha é obrigatória!';
   }
 
-  if (senha.length < 8){
+  if (senha.length < 8) {
     return 'A senha deve conter no mínimo 8 caracteres!'
   }
 
@@ -31,19 +31,19 @@ const router = Router();
 
 router.post('/usuarios', async (req, res) => {
   const { nome, email, senha } = req.body;
-  const erro = validarUsuario(nome, email, senha);
+  const erro = validarCadastro(nome, email, senha);
 
-// Interrompe o cadastro se algum dado for inválido
+  // Interrompe o cadastro se algum dado for inválido
   if (erro) {
     return res.status(400).json({
       mensagem: erro
     });
   }
 
-// Cria o hash da senha antes de enviar ao banco
+  // Cria o hash da senha antes de enviar ao banco
   const senhaHash = await bcrypt.hash(senha, 10);
 
-// Insere os dados no Banco de Dados
+  // Insere os dados no Banco de Dados
   const { data, error } = await supabase
     .from('usuarios')
     .insert({
@@ -54,6 +54,7 @@ router.post('/usuarios', async (req, res) => {
     .select('id, nome, email')
     .single();
 
+  // Erro no cadastro
   if (error) {
     console.error('Erro ao cadastrar usuário:', error);
 
@@ -62,6 +63,7 @@ router.post('/usuarios', async (req, res) => {
     });
   }
 
+  // Cadastro realizado
   res.status(201).json({
     mensagem: 'Usuário cadastrado com sucesso!',
     usuario: data

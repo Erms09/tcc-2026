@@ -1,11 +1,13 @@
 import express from 'express';
-import usuariosRouter from './routes/cadastro.js';
+import cadastroRouter from './routes/cadastro.js';
+import loginRouter from './routes/login.js';
 import { supabase } from './config/supabase.js';
 
 const server = express();
 
 server.use(express.json());
-server.use(usuariosRouter);
+server.use(cadastroRouter);
+server.use(loginRouter);
 
 server.get('/', (req, res) => {
   res.send('Servidor Rodando!');
