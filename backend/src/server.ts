@@ -1,5 +1,5 @@
 import express from 'express';
-import usuariosRouter from './routes/usuarios.js';
+import usuariosRouter from './routes/cadastro.js';
 import { supabase } from './config/supabase.js';
 
 const server = express();
