@@ -14,7 +14,7 @@ function validarCadastro(nome: string, email: string, senha: string) {
     return 'Email é obrigatório!';
   }
 
-  if (email.includes('@') || email.includes('.')) {
+  if (!email.includes('@') || !email.includes('.')) {
     return 'Email inválido!'
   }
 
