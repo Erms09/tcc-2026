@@ -42,6 +42,15 @@ router.post('/login', async (req, res) => {
         });
     }
 
+    //Compara a senha com o hash no banco
+    const senhaCorreta = await bcrypt.compare(senha, data.senha);
+
+    if (!senhaCorreta) {
+        return res.status(401).json({
+            mensagem: 'Email ou senha incorretos'
+        });
+    }
+
     res.status(200).json({
         mensagem: 'Usuário encontrado!',
         usuario: {
