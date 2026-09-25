@@ -12,8 +12,6 @@
     "sourceMap": true,
 
     "strict": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
     "skipLibCheck": true
   }
 }

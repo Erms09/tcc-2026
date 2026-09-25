@@ -29,7 +29,7 @@ function validarCadastro(nome: string, email: string, senha: string) {
   return null;
 }
 
-router.post('/usuarios', async (req, res) => {
+router.post('/cadastro', async (req, res) => {
   const { nome, email, senha } = req.body;
   const erro = validarCadastro(nome, email, senha);
 
