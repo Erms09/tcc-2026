@@ -514,15 +514,75 @@ function Auth() {
   const [errors, setErrors] = useState({});
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+
     const err = {};
-    if (signup && f.name.trim().length < 2) err.name = "Digite seu nome.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) err.email = "Digite um e-mail válido, ex.: voce@email.com.";
-    if (f.password.length < 8) err.password = "A senha precisa ter pelo menos 8 caracteres.";
+
+    if (signup && f.name.trim().length < 2) {
+      err.name = "Digite seu nome.";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) {
+      err.email = "Digite um e-mail válido, ex.: voce@email.com.";
+    }
+
+    if (f.password.length < 8) {
+      err.password = "A senha precisa ter pelo menos 8 caracteres.";
+    }
+
     setErrors(err);
+
     if (Object.keys(err).length) return;
-    login({ name: f.name.trim() || f.email.split("@")[0], email: f.email, role: f.role });
+
+    try {
+      // CADASTRO
+      if (signup) {
+        const resposta = await fetch("http://localhost:3000/cadastro", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: f.name.trim(),
+            email: f.email.trim(),
+            senha: f.password,
+          }),
+        });
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+          setErrors({
+            email: dados.mensagem || "Não foi possível cadastrar.",
+          });
+          return;
+        }
+
+        console.log("Cadastro realizado:", dados);
+
+        login({
+          name: dados.usuario.nome,
+          email: dados.usuario.email,
+          role: f.role,
+        });
+
+        return;
+      }
+
+      // LOGIN
+      login({
+        name: f.name.trim() || f.email.split("@")[0],
+        email: f.email,
+        role: f.role,
+      });
+    } catch (error) {
+      console.error("Erro ao conectar com o backend:", error);
+
+      setErrors({
+        email: "Não foi possível conectar ao servidor.",
+      });
+    }
   };
 
   return (
