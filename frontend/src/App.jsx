@@ -558,7 +558,7 @@ function Auth() {
             email: f.email.trim(),
             senha: f.password,
           }),
-        });-
+        });
 
         const dados = await resposta.json();
 
