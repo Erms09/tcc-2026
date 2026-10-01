@@ -510,9 +510,17 @@ function Comparar() {
 function Auth() {
   const { login } = useApp();
   const [signup, setSignup] = useState(false);
-  const [f, setF] = useState({ name: "", email: "", password: "", role: "jogador" });
+  const [f, setF] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "jogador",
+  });
   const [errors, setErrors] = useState({});
-  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+
+  const set = (k) => (e) => {
+    setF({ ...f, [k]: e.target.value });
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -536,7 +544,9 @@ function Auth() {
     if (Object.keys(err).length) return;
 
     try {
+      // =========================
       // CADASTRO
+      // =========================
       if (signup) {
         const resposta = await fetch("http://localhost:3000/cadastro", {
           method: "POST",
@@ -548,7 +558,7 @@ function Auth() {
             email: f.email.trim(),
             senha: f.password,
           }),
-        });
+        });-
 
         const dados = await resposta.json();
 
@@ -570,12 +580,37 @@ function Auth() {
         return;
       }
 
+      // =========================
       // LOGIN
+      // =========================
+      const resposta = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: f.email.trim(),
+          senha: f.password,
+        }),
+      });
+
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        setErrors({
+          email: dados.mensagem || "E-mail ou senha incorretos.",
+        });
+        return;
+      }
+
+      console.log("Login realizado:", dados);
+
       login({
-        name: f.name.trim() || f.email.split("@")[0],
-        email: f.email,
+        name: dados.usuario.nome,
+        email: dados.usuario.email,
         role: f.role,
       });
+
     } catch (error) {
       console.error("Erro ao conectar com o backend:", error);
 
@@ -588,25 +623,97 @@ function Auth() {
   return (
     <main className="auth">
       <div className="auth-side">
-        <div className="orb small">INDIE<br /><span>HUB</span></div>
-        <h2>Bem-vindo ao <span>IndieHub.</span></h2>
-        <p className="muted">Entre para acompanhar seus jogos favoritos ou crie uma conta para explorar o catálogo indie.</p>
+        <div className="orb small">
+          INDIE
+          <br />
+          <span>HUB</span>
+        </div>
+
+        <h2>
+          Bem-vindo ao <span>IndieHub.</span>
+        </h2>
+
+        <p className="muted">
+          Entre para acompanhar seus jogos favoritos ou crie uma conta para
+          explorar o catálogo indie.
+        </p>
       </div>
+
       <div className="auth-form-wrap">
         <form className="card pad form" onSubmit={submit} noValidate>
+
           <div className="toggle wide">
-            <button type="button" className={!signup ? "on" : ""} onClick={() => { setSignup(false); setErrors({}); }}>Entrar</button>
-            <button type="button" className={signup ? "on" : ""} onClick={() => { setSignup(true); setErrors({}); }}>Cadastrar</button>
+            <button
+              type="button"
+              className={!signup ? "on" : ""}
+              onClick={() => {
+                setSignup(false);
+                setErrors({});
+              }}
+            >
+              Entrar
+            </button>
+
+            <button
+              type="button"
+              className={signup ? "on" : ""}
+              onClick={() => {
+                setSignup(true);
+                setErrors({});
+              }}
+            >
+              Cadastrar
+            </button>
           </div>
-          {signup && <Field label="Nome" error={errors.name}><input value={f.name} onChange={set("name")} placeholder="Seu nome" className={errors.name ? "invalid" : ""} /></Field>}
-          <Field label="E-mail" error={errors.email}><input type="email" value={f.email} onChange={set("email")} placeholder="voce@email.com" className={errors.email ? "invalid" : ""} /></Field>
-          <Field label="Senha" error={errors.password}><input type="password" value={f.password} onChange={set("password")} placeholder="••••••••" className={errors.password ? "invalid" : ""} /></Field>
+
+          {signup && (
+            <Field label="Nome" error={errors.name}>
+              <input
+                value={f.name}
+                onChange={set("name")}
+                placeholder="Seu nome"
+                className={errors.name ? "invalid" : ""}
+              />
+            </Field>
+          )}
+
+          <Field label="E-mail" error={errors.email}>
+            <input
+              type="email"
+              value={f.email}
+              onChange={set("email")}
+              placeholder="voce@email.com"
+              className={errors.email ? "invalid" : ""}
+            />
+          </Field>
+
+          <Field label="Senha" error={errors.password}>
+            <input
+              type="password"
+              value={f.password}
+              onChange={set("password")}
+              placeholder="••••••••"
+              className={errors.password ? "invalid" : ""}
+            />
+          </Field>
+
           <div className="toggle wide">
             {["jogador", "desenvolvedor"].map((r) => (
-              <button type="button" key={r} className={f.role === r ? "on" : ""} onClick={() => setF({ ...f, role: r })}>{r === "jogador" ? "Jogador" : "Desenvolvedor"}</button>
+              <button
+                type="button"
+                key={r}
+                className={f.role === r ? "on" : ""}
+                onClick={() => setF({ ...f, role: r })}
+              >
+                {r === "jogador" ? "Jogador" : "Desenvolvedor"}
+              </button>
             ))}
           </div>
-          <button className="btn primary" type="submit">{signup ? "Criar conta" : "Entrar"}</button>
+
+          <button className="btn primary" type="submit">
+            {signup ? "Criar conta" : "Entrar"}
+          </button>
+
         </form>
       </div>
     </main>
