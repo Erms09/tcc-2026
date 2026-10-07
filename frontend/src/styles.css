@@ -1506,6 +1506,21 @@ footer {
   color: var(--white);
 }
 
+.become-dev-btn {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  color: #d8b4fe;
+  font-weight: 700;
+  font-size: .88rem;
+  cursor: pointer;
+}
+
+.become-dev-btn:hover {
+  color: var(--white);
+}
+
 /* Card top actions (favorite + compare) */
 .card-top-actions {
   position: absolute;

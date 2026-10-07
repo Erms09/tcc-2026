@@ -149,6 +149,10 @@ export default function App() {
     setTourSeen(false);
   }
 
+  function becomeDeveloper() {
+    setUser((prev) => (prev ? { ...prev, role: "desenvolvedor" } : prev));
+  }
+
   return (
     <div className="app-shell" data-theme={theme}>
       {!isAuthScreen && (
@@ -157,6 +161,7 @@ export default function App() {
           onLogout={handleLogout}
           theme={theme}
           onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+          onBecomeDeveloper={becomeDeveloper}
         />
       )}
       <div className="page-fade" key={location.pathname}>

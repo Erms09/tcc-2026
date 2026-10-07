@@ -6,7 +6,6 @@ export default function Auth({ onLogin }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("jogador");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ export default function Auth({ onLogin }) {
 
     setLoading(true);
     setTimeout(() => {
-      onLogin({ name: tab === "entrar" ? email.split("@")[0] : name, email, role });
+      onLogin({ name: tab === "entrar" ? email.split("@")[0] : name, email, role: "jogador" });
       setLoading(false);
       navigate("/catalogo");
     }, 900);
@@ -117,26 +116,6 @@ export default function Auth({ onLogin }) {
               />
               {errors.password && <span className="field-error">{errors.password}</span>}
             </label>
-
-            <div className="role-select">
-              <span className="role-select-label">Entrar como:</span>
-              <div className="role-options">
-                <button
-                  type="button"
-                  className={`role-btn ${role === "jogador" ? "active" : ""}`}
-                  onClick={() => setRole("jogador")}
-                >
-                  Jogador
-                </button>
-                <button
-                  type="button"
-                  className={`role-btn ${role === "desenvolvedor" ? "active" : ""}`}
-                  onClick={() => setRole("desenvolvedor")}
-                >
-                  Desenvolvedor
-                </button>
-              </div>
-            </div>
 
             <button className="primary-button auth-submit" type="submit" disabled={loading}>
               {loading ? (

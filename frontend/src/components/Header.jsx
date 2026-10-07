@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
-export default function Header({ user, onLogout, theme, onToggleTheme }) {
+export default function Header({ user, onLogout, theme, onToggleTheme, onBecomeDeveloper }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -55,7 +55,19 @@ export default function Header({ user, onLogout, theme, onToggleTheme }) {
                 </div>
                 <div className="profile-dropdown-links">
                   {user.role === "jogador" ? (
-                    <Link to="/perfil" onClick={() => setMenuOpen(false)}>Meu perfil</Link>
+                    <>
+                      <Link to="/perfil" onClick={() => setMenuOpen(false)}>Meu perfil</Link>
+                      <button
+                        className="become-dev-btn"
+                        type="button"
+                        onClick={() => {
+                          onBecomeDeveloper();
+                          setMenuOpen(false);
+                        }}
+                      >
+                        🚀 Tornar-se desenvolvedor
+                      </button>
+                    </>
                   ) : (
                     <>
                       <Link to="/meus-jogos" onClick={() => setMenuOpen(false)}>Meus jogos</Link>
