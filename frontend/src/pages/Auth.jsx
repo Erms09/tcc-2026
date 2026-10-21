@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cadastrarUsuario, logarUsuario } from "../utils/api";
 
 export default function Auth({ onLogin }) {
   const [tab, setTab] = useState("entrar");
@@ -8,6 +9,7 @@ export default function Auth({ onLogin }) {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
   function validate() {
@@ -21,30 +23,45 @@ export default function Auth({ onLogin }) {
       newErrors.email = "Digite um e-mail válido, ex.: voce@email.com.";
     }
 
-    if (password.length < 6) {
-      newErrors.password = "A senha precisa ter pelo menos 6 caracteres.";
+    if (tab === "cadastro" && password.length < 8) {
+      newErrors.password = "A senha precisa ter pelo menos 8 caracteres.";
+    }
+
+    if (tab === "entrar" && !password) {
+      newErrors.password = "Digite sua senha.";
     }
 
     return newErrors;
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setServerError("");
     const newErrors = validate();
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
     setLoading(true);
-    setTimeout(() => {
-      onLogin({ name: tab === "entrar" ? email.split("@")[0] : name, email, role: "jogador" });
-      setLoading(false);
+    try {
+      const result =
+        tab === "entrar"
+          ? await logarUsuario({ email, senha: password })
+          : await cadastrarUsuario({ nome: name.trim(), email, senha: password });
+
+      const usuario = result.usuario;
+      onLogin({ id: usuario.id, name: usuario.nome, email: usuario.email, role: "jogador" });
       navigate("/catalogo");
-    }, 900);
+    } catch (err) {
+      setServerError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function switchTab(newTab) {
     setTab(newTab);
     setErrors({});
+    setServerError("");
   }
 
   return (
@@ -116,6 +133,8 @@ export default function Auth({ onLogin }) {
               />
               {errors.password && <span className="field-error">{errors.password}</span>}
             </label>
+
+            {serverError && <div className="server-error">{serverError}</div>}
 
             <button className="primary-button auth-submit" type="submit" disabled={loading}>
               {loading ? (
