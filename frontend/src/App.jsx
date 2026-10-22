@@ -1,4 +1,4 @@
-
+﻿
 import React, { useMemo, useState, useEffect } from "react";
 import {
   Routes,
@@ -30,6 +30,7 @@ import Comparar from "./pages/Comparar";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Historico from "./pages/Historico";
+import Notificacoes from "./pages/Notificacoes";
 
 import { PALETTES } from "./utils/palettes";
 import { loadStoredState, STORAGE_KEY } from "./utils/storage";
@@ -55,6 +56,18 @@ export default function App() {
 
   const [visitHistory, setVisitHistory] = useState(() =>
     stored ? stored.visitHistory || [] : []
+  );
+  const [notifications, setNotifications] = useState(() =>
+    stored?.notifications || [
+      {
+        id: "welcome-indiehub",
+        type: "welcome",
+        title: "Bem-vindo ao IndieHub!",
+        message: "Explore jogos independentes, conheça estúdios e descubra novas aventuras.",
+        createdAt: new Date().toISOString(),
+        read: false,
+      },
+    ]
   );
 
   const [likedIds, setLikedIds] = useState(() =>
@@ -105,6 +118,7 @@ export default function App() {
       gamesData,
       visitedIds,
       visitHistory,
+      notifications,
       likedIds,
       favorites,
       compareIds,
@@ -123,6 +137,7 @@ export default function App() {
     gamesData,
     visitedIds,
     visitHistory,
+    notifications,
     likedIds,
     favorites,
     compareIds,
@@ -213,12 +228,53 @@ export default function App() {
     }
   }
 
-  function toggleFavorite(id) {
-    setFavorites((previous) =>
-      previous.includes(id)
-        ? previous.filter((item) => item !== id)
-        : [...previous, id]
+    function addNotification(notification) {
+    setNotifications((previous) => [
+      {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        createdAt: new Date().toISOString(),
+        read: false,
+        ...notification,
+      },
+      ...previous,
+    ]);
+  }
+
+  function markNotificationRead(id) {
+    setNotifications((previous) =>
+      previous.map((item) => item.id === id ? { ...item, read: true } : item)
     );
+  }
+
+  function markAllNotificationsRead() {
+    setNotifications((previous) => previous.map((item) => ({ ...item, read: true })));
+  }
+
+  function deleteNotification(id) {
+    setNotifications((previous) => previous.filter((item) => item.id !== id));
+  }
+
+  function clearNotifications() {
+    setNotifications([]);
+  }
+
+  function toggleFavorite(id) {
+    const wasFavorite = favorites.includes(id);
+    setFavorites((previous) =>
+      wasFavorite ? previous.filter((item) => item !== id) : [...previous, id]
+    );
+
+    if (!wasFavorite) {
+      const game = gamesData.find((item) => item.id === id);
+      if (game) {
+        addNotification({
+          type: "favorite",
+          title: "Jogo adicionado aos favoritos",
+          message: `${game.title} agora está na sua lista de favoritos.`,
+          gameId: game.id,
+        });
+      }
+    }
   }
 
   function toggleCompare(id) {
@@ -256,29 +312,39 @@ export default function App() {
         },
         ...previous,
       ]);
+
+      addNotification({
+        type: "comment",
+        title: "Comentário publicado",
+        message: `Seu comentário em ${game.title} foi publicado.`,
+        gameId: game.id,
+      });
     }
   }
 
   function createGame(fields) {
-    setGamesData((previous) => {
-      const newId =
-        Math.max(0, ...previous.map((game) => game.id)) + 1;
+    const newId = Math.max(0, ...gamesData.map((game) => game.id)) + 1;
+    const palette = PALETTES[newId % PALETTES.length];
 
-      const palette = PALETTES[newId % PALETTES.length];
+    setGamesData((previous) => [
+      ...previous,
+      {
+        id: newId,
+        ...fields,
+        rating: 0,
+        isNew: true,
+        colors: palette,
+        views: 0,
+        likes: 0,
+        comments: [],
+      },
+    ]);
 
-      return [
-        ...previous,
-        {
-          id: newId,
-          ...fields,
-          rating: 0,
-          isNew: true,
-          colors: palette,
-          views: 0,
-          likes: 0,
-          comments: [],
-        },
-      ];
+    addNotification({
+      type: "game",
+      title: "Jogo publicado no IndieHub",
+      message: `${fields.title || "Seu novo jogo"} foi adicionado ao catálogo.`,
+      gameId: newId,
     });
   }
 
@@ -365,6 +431,19 @@ export default function App() {
                 visitHistory={visitHistory}
                 onRemoveVisit={removeVisit}
                 onClearHistory={clearVisitHistory}
+              />
+            }
+          />
+
+          <Route
+            path="/notificacoes"
+            element={
+              <Notificacoes
+                notifications={notifications}
+                onMarkRead={markNotificationRead}
+                onMarkAllRead={markAllNotificationsRead}
+                onDelete={deleteNotification}
+                onClearAll={clearNotifications}
               />
             }
           />
@@ -479,3 +558,4 @@ export default function App() {
     </div>
   );
 }
+

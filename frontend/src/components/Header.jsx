@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 
@@ -28,6 +28,7 @@ export default function Header({
         <NavLink to="/ranking">Ranking</NavLink>
         <NavLink to="/favoritos">Favoritos</NavLink>
         <NavLink to="/historico">Histórico</NavLink>
+        <NavLink to="/notificacoes">Notificações</NavLink>
         <NavLink to="/comunidade">Comunidade</NavLink>
         <NavLink to="/sobre">Sobre</NavLink>
 
@@ -147,3 +148,4 @@ export default function Header({
     </header>
   );
 }
+
