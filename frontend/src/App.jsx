@@ -25,6 +25,7 @@ import Favoritos from "./pages/Favoritos";
 import Comunidade from "./pages/Comunidade";
 import MeuPerfil from "./pages/MeuPerfil";
 import MeusJogos from "./pages/MeusJogos";
+import Dashboard from "./pages/Dashboard";
 import Planos from "./pages/Planos";
 import Comparar from "./pages/Comparar";
 import Auth from "./pages/Auth";
@@ -490,6 +491,21 @@ export default function App() {
             element={
               user?.role === "desenvolvedor" ? (
                 <MeusJogos user={user} gamesData={gamesData} />
+              ) : (
+                <Navigate to="/catalogo" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/dashboard"
+            element={
+              user?.role === "desenvolvedor" ? (
+                <Dashboard
+                  user={user}
+                  gamesData={gamesData}
+                  visitHistory={visitHistory}
+                />
               ) : (
                 <Navigate to="/catalogo" replace />
               )

@@ -117,6 +117,13 @@ export default function Header({
                   ) : (
                     <>
                       <Link
+                        to="/dashboard"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+
+                      <Link
                         to="/meus-jogos"
                         onClick={() => setMenuOpen(false)}
                       >
