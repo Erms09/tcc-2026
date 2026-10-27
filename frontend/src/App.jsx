@@ -26,6 +26,7 @@ import Comunidade from "./pages/Comunidade";
 import MeuPerfil from "./pages/MeuPerfil";
 import MeusJogos from "./pages/MeusJogos";
 import Dashboard from "./pages/Dashboard";
+import Novidades from "./pages/Novidades";
 import Planos from "./pages/Planos";
 import Comparar from "./pages/Comparar";
 import Auth from "./pages/Auth";
@@ -414,6 +415,18 @@ export default function App() {
                 onRegisterView={registerView}
                 onAddComment={addComment}
                 user={user}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+              />
+            }
+          />
+
+          <Route
+            path="/novidades"
+            element={
+              <Novidades
+                gamesData={gamesData}
+                activity={activity}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
               />

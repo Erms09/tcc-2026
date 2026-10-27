@@ -25,6 +25,7 @@ export default function Header({
           Catálogo
         </NavLink>
 
+        <NavLink to="/novidades">Novidades</NavLink>
         <NavLink to="/ranking">Ranking</NavLink>
         <NavLink to="/favoritos">Favoritos</NavLink>
         <NavLink to="/historico">Histórico</NavLink>
