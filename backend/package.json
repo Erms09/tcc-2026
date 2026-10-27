@@ -2,6 +2,11 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsc && node dist/server.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
     "bcrypt": "^6.0.0",

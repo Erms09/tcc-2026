@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import GameCard from "../components/GameCard";
 import { genres, types } from "../data";
 
-export default function Catalog({ gamesData, activity, favorites, onToggleFavorite, compareIds, onToggleCompare }) {
+export default function Catalog({ gamesData, favorites, onToggleFavorite, compareIds, onToggleCompare }) {
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("Todos");
   const [type, setType] = useState("Todos");
@@ -93,37 +92,11 @@ export default function Catalog({ gamesData, activity, favorites, onToggleFavori
         </section>
       )}
 
-      {activity.length > 0 && (
-        <section className="container activity-section">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">COMUNIDADE</span>
-              <h2>Atividade recente</h2>
-            </div>
-            <Link to="/comunidade" className="secondary-button">Ver tudo</Link>
-          </div>
-          <div className="activity-feed">
-            {activity.slice(0, 5).map((item, index) => (
-              <div className="activity-item" key={index}>
-                <div className="avatar">{item.name[0]}</div>
-                <p>
-                  <strong>{item.name}</strong>{" "}
-                  {item.type === "like" ? "curtiu" : "comentou em"}{" "}
-                  <Link to={`/jogo/${item.gameId}`}>{item.gameTitle}</Link>
-                  {item.text && <span className="activity-text"> — "{item.text}"</span>}
-                </p>
-                <span className="activity-time">{item.timeLabel}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       <main className="container" id="catalogo">
         <section className="section-heading">
           <div>
             <span className="eyebrow">VITRINE</span>
-            <h2>Jogos em destaque</h2>
+            <h2>Todos os jogos</h2>
             <p>Encontre projetos independentes e conheça seus criadores.</p>
           </div>
           <div className="section-heading-right">

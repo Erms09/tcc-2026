@@ -22,7 +22,6 @@ export default function GameDetails({
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState("");
   const [sending, setSending] = useState(false);
-  const [supportOpen, setSupportOpen] = useState(false);
   const [shared, setShared] = useState(false);
   const [screenshotIndex, setScreenshotIndex] = useState(0);
 
@@ -202,32 +201,6 @@ export default function GameDetails({
               {shared ? "✓ Link copiado!" : "🔗 Compartilhar"}
             </button>
           </div>
-
-          <button
-            className="support-button detail-support-button"
-            onClick={() => setSupportOpen((previous) => !previous)}
-            type="button"
-            aria-expanded={supportOpen}
-          >
-            💜 Apoiar desenvolvedor
-          </button>
-
-          {supportOpen && (
-            <div className="support-note">
-              <p>
-                O apoio direto ainda está em modo de demonstração.
-                Em breve, será possível apoiar o estúdio{" "}
-                <strong>{game.developer}</strong> por aqui.
-              </p>
-              <button
-                className="support-close"
-                onClick={() => setSupportOpen(false)}
-                type="button"
-              >
-                Fechar
-              </button>
-            </div>
-          )}
 
           <div className="external-links detail-external-links">
             {game.steam && (

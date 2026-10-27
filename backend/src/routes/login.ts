@@ -32,13 +32,20 @@ router.post('/login', async (req, res) => {
         .from('usuarios')
         .select('id, nome, email, senha')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
     if (error) {
         console.error('Erro no login do usuário:', error);
 
         return res.status(500).json({
             mensagem: 'Erro ao buscar usuário'
+        });
+    }
+
+    // E-mail não cadastrado: mesma resposta de senha errada
+    if (!data) {
+        return res.status(401).json({
+            mensagem: 'Email ou senha incorretos'
         });
     }
 

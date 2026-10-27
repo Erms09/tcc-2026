@@ -26,7 +26,7 @@ export default function AssistantWidget({ gamesData, favorites, likedIds }) {
       {open && recommendation && (
         <div className="assistant-panel">
           <div className="assistant-head">
-            <strong>🤖 Assistente IndieHub</strong>
+            <strong>✨ Recomendação IndieHub</strong>
             <button onClick={() => setOpen(false)} type="button" aria-label="Fechar">✕</button>
           </div>
           <p>Baseado no que você curtiu, recomendamos:</p>
@@ -42,8 +42,8 @@ export default function AssistantWidget({ gamesData, favorites, likedIds }) {
           </Link>
         </div>
       )}
-      <button className="assistant-fab" onClick={() => setOpen(!open)} type="button" aria-label="Assistente IndieHub">
-        🤖
+      <button className="assistant-fab" onClick={() => setOpen(!open)} type="button" aria-label="Recomendação IndieHub">
+        ✨
       </button>
     </div>
   );

@@ -7,7 +7,7 @@ export default function NotFound() {
     <main className="container not-found">
       <h1>404</h1>
       <p>Essa página não existe.</p>
-      <button className="primary-button" onClick={() => navigate("/")}>Voltar ao catálogo</button>
+      <button className="primary-button" onClick={() => navigate("/catalogo")}>Voltar ao catálogo</button>
     </main>
   );
 }

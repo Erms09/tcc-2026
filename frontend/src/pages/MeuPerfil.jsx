@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import GameCard from "../components/GameCard";
 
-export default function MeuPerfil({ user, gamesData, favorites, likedIds }) {
+export default function MeuPerfil({ user, gamesData, favorites, likedIds, onToggleFavorite }) {
   const favGames = gamesData.filter((g) => favorites.includes(g.id));
   const likedGames = gamesData.filter((g) => likedIds.includes(g.id));
   const myComments = [];
@@ -32,7 +32,7 @@ export default function MeuPerfil({ user, gamesData, favorites, likedIds }) {
       {favGames.length > 0 ? (
         <div className="game-grid">
           {favGames.map((g) => (
-            <GameCard key={g.id} game={g} view="grid" isFavorite onToggleFavorite={() => {}} />
+            <GameCard key={g.id} game={g} view="grid" isFavorite onToggleFavorite={onToggleFavorite} />
           ))}
         </div>
       ) : (

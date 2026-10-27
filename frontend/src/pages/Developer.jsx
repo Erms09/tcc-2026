@@ -166,7 +166,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
           {submitted && (
             <div className="success">
               ✓ Jogo cadastrado com sucesso! Confira em{" "}
-              <Link to="/meus-jogos">Meus jogos</Link>.
+              <Link to="/dashboard">Dashboard</Link>.
             </div>
           )}
         </form>

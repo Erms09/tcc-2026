@@ -24,10 +24,8 @@ import StudioProfile from "./pages/StudioProfile";
 import Favoritos from "./pages/Favoritos";
 import Comunidade from "./pages/Comunidade";
 import MeuPerfil from "./pages/MeuPerfil";
-import MeusJogos from "./pages/MeusJogos";
 import Dashboard from "./pages/Dashboard";
 import Novidades from "./pages/Novidades";
-import Planos from "./pages/Planos";
 import Comparar from "./pages/Comparar";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -396,7 +394,6 @@ export default function App() {
             element={
               <Catalog
                 gamesData={gamesData}
-                activity={activity}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
                 compareIds={compareIds}
@@ -464,7 +461,13 @@ export default function App() {
 
           <Route
             path="/estudio/:name"
-            element={<StudioProfile gamesData={gamesData} />}
+            element={
+              <StudioProfile
+                gamesData={gamesData}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+              />
+            }
           />
 
           <Route
@@ -492,18 +495,8 @@ export default function App() {
                   gamesData={gamesData}
                   favorites={favorites}
                   likedIds={likedIds}
+                  onToggleFavorite={toggleFavorite}
                 />
-              ) : (
-                <Navigate to="/catalogo" replace />
-              )
-            }
-          />
-
-          <Route
-            path="/meus-jogos"
-            element={
-              user?.role === "desenvolvedor" ? (
-                <MeusJogos user={user} gamesData={gamesData} />
               ) : (
                 <Navigate to="/catalogo" replace />
               )
@@ -519,17 +512,6 @@ export default function App() {
                   gamesData={gamesData}
                   visitHistory={visitHistory}
                 />
-              ) : (
-                <Navigate to="/catalogo" replace />
-              )
-            }
-          />
-
-          <Route
-            path="/planos"
-            element={
-              user?.role === "desenvolvedor" ? (
-                <Planos />
               ) : (
                 <Navigate to="/catalogo" replace />
               )

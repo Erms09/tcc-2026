@@ -123,20 +123,6 @@ export default function Header({
                       >
                         Dashboard
                       </Link>
-
-                      <Link
-                        to="/meus-jogos"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Meus jogos
-                      </Link>
-
-                      <Link
-                        to="/planos"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Planos
-                      </Link>
                     </>
                   )}
                 </div>

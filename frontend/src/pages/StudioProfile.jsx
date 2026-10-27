@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import GameCard from "../components/GameCard";
 import NotFound from "./NotFound";
 
-export default function StudioProfile({ gamesData }) {
+export default function StudioProfile({ gamesData, favorites = [], onToggleFavorite }) {
   const { name } = useParams();
   const studioName = decodeURIComponent(name);
   const studioGames = gamesData.filter((g) => g.developer === studioName);
@@ -28,7 +28,7 @@ export default function StudioProfile({ gamesData }) {
 
       <div className="game-grid" style={{ marginTop: "35px" }}>
         {studioGames.map((game) => (
-          <GameCard key={game.id} game={game} view="grid" isFavorite={false} onToggleFavorite={() => {}} />
+          <GameCard key={game.id} game={game} view="grid" isFavorite={favorites.includes(game.id)} onToggleFavorite={onToggleFavorite} />
         ))}
       </div>
     </main>
