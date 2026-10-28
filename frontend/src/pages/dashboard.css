@@ -149,3 +149,71 @@
   border-radius: 999px;
   transition: width .4s ease;
 }
+
+.dash-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.dash-filters label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.dash-filters select {
+  min-width: 220px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--white);
+  padding: 10px 12px;
+}
+
+.dash-period {
+  display: inline-flex;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.dash-period button {
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: .85rem;
+  padding: 7px 14px;
+}
+
+.dash-period button.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.dash-cards {
+  margin-top: 18px;
+}
+
+.dash-card small {
+  color: var(--muted);
+}
+
+.dash-card strong.dash-card-text {
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.dash-bar-selected .dash-bar-info a {
+  color: var(--accent);
+}

@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./dashboard.css";
 
-const MONTHS_SHOWN = 6;
+const PERIODS = [3, 6, 12];
 
 // Gera os últimos meses (do mais antigo para o atual).
 function getLastMonths(count) {
@@ -93,30 +93,42 @@ function LineChart({ data }) {
 }
 
 export default function Dashboard({ user, gamesData, visitHistory }) {
+  const [period, setPeriod] = useState(6);
+  const [selectedGame, setSelectedGame] = useState("all");
+
   const myGames = useMemo(
     () => gamesData.filter((game) => game.developer === user.name),
     [gamesData, user.name]
   );
 
+  // Jogos considerados nos números e no gráfico (todos ou só o escolhido).
+  const scopeGames = useMemo(
+    () =>
+      selectedGame === "all"
+        ? myGames
+        : myGames.filter((game) => String(game.id) === selectedGame),
+    [myGames, selectedGame]
+  );
+
   const stats = useMemo(() => {
-    const views = myGames.reduce((total, g) => total + (g.views || 0), 0);
-    const likes = myGames.reduce((total, g) => total + (g.likes || 0), 0);
-    const comments = myGames.reduce(
+    const views = scopeGames.reduce((total, g) => total + (g.views || 0), 0);
+    const likes = scopeGames.reduce((total, g) => total + (g.likes || 0), 0);
+    const comments = scopeGames.reduce(
       (total, g) => total + (g.comments ? g.comments.length : 0),
       0
     );
-    const rated = myGames.filter((g) => g.rating > 0);
+    const rated = scopeGames.filter((g) => g.rating > 0);
     const rating = rated.length
       ? rated.reduce((total, g) => total + g.rating, 0) / rated.length
       : 0;
 
     return { views, likes, comments, rating };
-  }, [myGames]);
+  }, [scopeGames]);
 
   // Visualizações por mês, a partir do histórico de visitas registrado.
   const monthly = useMemo(() => {
-    const months = getLastMonths(MONTHS_SHOWN);
-    const myIds = new Set(myGames.map((g) => g.id));
+    const months = getLastMonths(period);
+    const myIds = new Set(scopeGames.map((g) => g.id));
 
     visitHistory.forEach((visit) => {
       if (!myIds.has(visit.gameId)) return;
@@ -127,6 +139,38 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
     });
 
     return months;
+  }, [scopeGames, visitHistory, period]);
+
+  // Visitas do mês atual e jogo mais visto neste mês (todos os jogos do estúdio).
+  const thisMonth = useMemo(() => {
+    const now = new Date();
+    const counts = {};
+    let total = 0;
+
+    visitHistory.forEach((visit) => {
+      const date = new Date(visit.visitedAt);
+      if (
+        date.getFullYear() !== now.getFullYear() ||
+        date.getMonth() !== now.getMonth()
+      ) {
+        return;
+      }
+
+      const game = myGames.find((g) => g.id === visit.gameId);
+      if (!game) return;
+
+      counts[game.id] = (counts[game.id] || 0) + 1;
+      total += 1;
+    });
+
+    const topId = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+    const topGame = myGames.find((g) => String(g.id) === topId);
+
+    return {
+      total,
+      topGame,
+      topCount: topGame ? counts[topGame.id] : 0,
+    };
   }, [myGames, visitHistory]);
 
   const monthlyTotal = monthly.reduce((total, m) => total + m.count, 0);
@@ -156,10 +200,41 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
         </div>
       ) : (
         <>
+          <div className="dash-filters">
+            <label>
+              Jogo
+              <select
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+              >
+                <option value="all">Todos os jogos</option>
+                {myGames.map((game) => (
+                  <option key={game.id} value={String(game.id)}>
+                    {game.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <div className="dash-period" role="group" aria-label="Período do gráfico">
+              {PERIODS.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={period === value ? "active" : ""}
+                  onClick={() => setPeriod(value)}
+                  aria-pressed={period === value}
+                >
+                  {value} meses
+                </button>
+              ))}
+            </div>
+          </div>
+
           <section className="dash-cards">
             <article className="dash-card">
               <span className="dash-card-label">Jogos publicados</span>
-              <strong>{formatNumber(myGames.length)}</strong>
+              <strong>{formatNumber(scopeGames.length)}</strong>
             </article>
             <article className="dash-card">
               <span className="dash-card-label">Visualizações</span>
@@ -180,15 +255,31 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
               <span className="dash-card-label">Comentários</span>
               <strong>{formatNumber(stats.comments)}</strong>
             </article>
+            <article className="dash-card">
+              <span className="dash-card-label">Visitas neste mês</span>
+              <strong>{formatNumber(thisMonth.total)}</strong>
+            </article>
+            <article className="dash-card">
+              <span className="dash-card-label">Mais visto no mês</span>
+              {thisMonth.topGame ? (
+                <>
+                  <strong className="dash-card-text">{thisMonth.topGame.title}</strong>
+                  <small>{formatNumber(thisMonth.topCount)} visitas</small>
+                </>
+              ) : (
+                <strong>—</strong>
+              )}
+            </article>
           </section>
 
           <section className="dash-panel">
             <div className="dash-panel-head">
               <h2>Visualizações por mês</h2>
-              <span>Últimos {MONTHS_SHOWN} meses</span>
+              <span>Últimos {period} meses</span>
             </div>
 
             <LineChart data={monthly} />
+
 
             {monthlyTotal === 0 && (
               <p className="dash-note">
@@ -206,7 +297,10 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
 
             <ul className="dash-bars">
               {ranking.map((game) => (
-                <li key={game.id}>
+                <li
+                  key={game.id}
+                  className={String(game.id) === selectedGame ? "dash-bar-selected" : ""}
+                >
                   <div className="dash-bar-info">
                     <Link to={`/jogo/${game.id}`}>{game.title}</Link>
                     <span>

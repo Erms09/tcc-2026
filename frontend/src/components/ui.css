@@ -1,0 +1,209 @@
+/* ---------- Toasts ---------- */
+.toast-stack {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: grid;
+  gap: 10px;
+  max-width: min(360px, calc(100vw - 40px));
+}
+
+.toast {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 4px solid #22c55e;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, .35);
+  animation: toast-in .25s ease;
+}
+
+.toast-error {
+  border-left-color: #f87171;
+}
+
+.toast > span {
+  color: #22c55e;
+  font-weight: 900;
+}
+
+.toast-error > span {
+  color: #f87171;
+}
+
+.toast p {
+  margin: 0;
+  color: var(--white);
+  font-size: .88rem;
+  line-height: 1.4;
+}
+
+.toast button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: .85rem;
+  padding: 4px;
+}
+
+.toast button:hover {
+  color: var(--white);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Carregamento e erro ---------- */
+.page-loader {
+  min-height: 50vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  color: var(--muted);
+}
+
+.page-loader-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  animation: page-spin .8s linear infinite;
+}
+
+@keyframes page-spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-boundary {
+  text-align: center;
+  padding: 90px 0;
+}
+
+.error-boundary p {
+  color: var(--muted);
+  margin: 10px 0 26px;
+}
+
+.error-boundary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Menu "Mais" do cabeçalho ---------- */
+.nav-more {
+  position: relative;
+}
+
+.nav-more-btn {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-more-btn:hover,
+.nav-more-btn.active {
+  color: var(--white);
+}
+
+.nav-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 6px;
+}
+
+.nav-more-menu {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 190px;
+  display: grid;
+  gap: 2px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, .4);
+  z-index: 20;
+}
+
+.nav-more-menu a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 9px;
+}
+
+.nav-more-menu a:hover,
+.nav-more-menu a.active {
+  background: var(--border);
+  color: var(--white);
+}
+
+/* ---------- Acessibilidade ---------- */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  z-index: 100;
+  transition: top .15s ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-offset: 0;
+}
+
+#conteudo:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
