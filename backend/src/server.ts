@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cadastroRouter from './routes/cadastro.js';
 import loginRouter from './routes/login.js';
+import devsRouter from './routes/devs.js';
 import jogosRouter from './routes/jogos.js';
 import { supabase } from './config/supabase.js';
 
@@ -12,6 +13,7 @@ server.use(express.json());
 
 server.use(cadastroRouter);
 server.use(loginRouter);
+server.use(devsRouter);
 server.use(jogosRouter);
 
 supabase
