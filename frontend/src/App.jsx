@@ -10,6 +10,7 @@ import TourModal from "./components/TourModal";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PageLoader from "./components/PageLoader";
 import Toasts from "./components/Toasts";
+import BecomeDeveloperModal from "./components/BecomeDeveloperModal";
 
 import Auth from "./pages/Auth";
 
@@ -77,7 +78,7 @@ export default function App() {
     createGame,
     handleLogout,
     handleLogin,
-    becomeDeveloper,
+    openDevModal,
   } = useApp();
 
   // Atualiza o título da aba conforme a página.
@@ -102,7 +103,7 @@ export default function App() {
               current === "dark" ? "light" : "dark"
             )
           }
-          onBecomeDeveloper={becomeDeveloper}
+          onBecomeDeveloper={openDevModal}
           unreadCount={notifications.filter((item) => !item.read).length}
         />
       )}
@@ -196,6 +197,7 @@ export default function App() {
             element={
               <StudioProfile
                 gamesData={gamesData}
+                user={user}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
               />
@@ -267,7 +269,7 @@ export default function App() {
               user?.role === "desenvolvedor" ? (
                 <Developer
                   onCreateGame={createGame}
-                  currentUserName={user.name}
+                  currentUserName={user.studioName || user.name}
                 />
               ) : (
                 <Navigate to="/catalogo" replace />
@@ -301,6 +303,7 @@ export default function App() {
         <TourModal onClose={() => setTourSeen(true)} />
       )}
 
+      <BecomeDeveloperModal />
       <Toasts />
     </div>
   );

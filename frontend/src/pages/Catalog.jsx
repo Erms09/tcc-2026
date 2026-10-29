@@ -153,7 +153,11 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
             ))}
           </div>
         ) : (
-          <div className="empty-state">Nenhum jogo encontrado com esses filtros.</div>
+          <div className="empty-state">
+            {gamesData.length === 0
+              ? "Ainda não há jogos publicados. Os primeiros projetos dos desenvolvedores vão aparecer aqui."
+              : "Nenhum jogo encontrado com esses filtros."}
+          </div>
         )}
       </main>
     </>

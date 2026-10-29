@@ -28,6 +28,12 @@ export default function Novidades({ gamesData, activity, favorites, onToggleFavo
 
       <section className="news-section">
         <h2>🆕 Jogos recém-publicados</h2>
+        {recentGames.length === 0 && (
+          <div className="empty-state">
+            Nenhum jogo publicado ainda. Os lançamentos aparecem aqui.
+          </div>
+        )}
+
         <div className="game-grid">
           {recentGames.map((game) => (
             <GameCard

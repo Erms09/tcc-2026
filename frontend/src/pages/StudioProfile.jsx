@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import GameCard from "../components/GameCard";
 import NotFound from "./NotFound";
 
-export default function StudioProfile({ gamesData, favorites = [], onToggleFavorite }) {
+export default function StudioProfile({ gamesData, user, favorites = [], onToggleFavorite }) {
   const { name } = useParams();
   const studioName = decodeURIComponent(name);
   const studioGames = gamesData.filter((g) => g.developer === studioName);
@@ -18,6 +18,9 @@ export default function StudioProfile({ gamesData, favorites = [], onToggleFavor
       <Link to="/catalogo" className="back-link">← Voltar para o catálogo</Link>
       <span className="eyebrow">ESTÚDIO</span>
       <h1>{studioName}</h1>
+      {user?.studioName === studioName && user.bio && (
+        <p className="studio-bio">{user.bio}</p>
+      )}
       <p>{studioGames.length} jogo(s) publicado(s) no IndieHub.</p>
 
       <div className="stats-bar">

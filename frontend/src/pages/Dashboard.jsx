@@ -96,9 +96,13 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
   const [period, setPeriod] = useState(6);
   const [selectedGame, setSelectedGame] = useState("all");
 
+  // Os jogos são ligados ao estúdio pelo nome (ou pelo nome do usuário,
+  // caso o desenvolvedor ainda não tenha estúdio cadastrado).
+  const studioName = user.studioName || user.name;
+
   const myGames = useMemo(
-    () => gamesData.filter((game) => game.developer === user.name),
-    [gamesData, user.name]
+    () => gamesData.filter((game) => game.developer === studioName),
+    [gamesData, studioName]
   );
 
   // Jogos considerados nos números e no gráfico (todos ou só o escolhido).
@@ -185,8 +189,9 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
   return (
     <main className="container simple-page dash-page">
       <span className="eyebrow">DASHBOARD</span>
-      <h1>Meu estúdio.</h1>
-      <p>Acompanhe o desempenho dos jogos cadastrados como "{user.name}".</p>
+      <h1>{studioName}</h1>
+      {user.bio && <p className="dash-bio">{user.bio}</p>}
+      <p>Acompanhe o desempenho dos jogos do seu estúdio.</p>
 
       {myGames.length === 0 ? (
         <div className="empty-state" style={{ marginTop: "35px" }}>

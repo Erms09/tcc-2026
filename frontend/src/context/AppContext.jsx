@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { games } from "../data";
 import { PALETTES } from "../utils/palettes";
 import { loadStoredState, STORAGE_KEY } from "../utils/storage";
+import { cadastrarDesenvolvedor, DEVELOPER_API_ENABLED } from "../utils/api";
 
 const AppContext = createContext(null);
 
@@ -364,12 +365,52 @@ export function AppProvider({ children }) {
     setTourSeen(false);
   }
 
-  function becomeDeveloper() {
+  // Controla a janela "Tornar-se desenvolvedor".
+  const [devModalOpen, setDevModalOpen] = useState(false);
+
+  function openDevModal() {
+    setDevModalOpen(true);
+  }
+
+  function closeDevModal() {
+    setDevModalOpen(false);
+  }
+
+  // Recebe { studioName, bio }. Lança um erro com a mensagem a mostrar
+  // na janela se algo falhar (ex.: back-end fora do ar).
+  async function becomeDeveloper({ studioName, bio }) {
+    let saved = { studioName, bio };
+
+    if (DEVELOPER_API_ENABLED) {
+      const response = await cadastrarDesenvolvedor({
+        idUsuario: user?.id,
+        nomeEstudio: studioName,
+        bio,
+      });
+
+      // Usa o que o back-end devolveu, se vier algo.
+      if (response?.desenvolvedor) {
+        saved = {
+          studioName: response.desenvolvedor.nome_estudio || studioName,
+          bio: response.desenvolvedor.bio ?? bio,
+        };
+      }
+    }
+
     setUser((previous) =>
-      previous
-        ? { ...previous, role: "desenvolvedor" }
-        : previous
+      previous ? { ...previous, role: "desenvolvedor", ...saved } : previous
     );
+
+    setDevModalOpen(false);
+    showToast(`Bem-vindo, ${saved.studioName}! Agora você pode publicar jogos.`);
+
+    addNotification({
+      type: "game",
+      title: "Você agora é desenvolvedor",
+      message: `O estúdio ${saved.studioName} foi criado. Cadastre seu primeiro jogo.`,
+    });
+
+    navigate("/desenvolvedor");
   }
 
   const value = {
@@ -407,6 +448,9 @@ export function AppProvider({ children }) {
     handleLogout,
     handleLogin,
     becomeDeveloper,
+    devModalOpen,
+    openDevModal,
+    closeDevModal,
     showToast,
     dismissToast,
   };

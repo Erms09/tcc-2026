@@ -44,6 +44,18 @@ Para apontar para outro endereço de backend, defina `VITE_API_URL` no ambiente 
 
 Login e cadastro, catálogo com filtros, detalhes do jogo (curtidas, comentários, favoritos), ranking, comparador, favoritos, histórico, notificações, comunidade, novidades, perfil de estúdio, cadastro de jogo e dashboard do desenvolvedor.
 
+## Integração com o back-end (a fazer)
+
+- **Jogos:** o catálogo começa vazio. Os jogos cadastrados pelos desenvolvedores ficam hoje no navegador (`localStorage`). Quando houver back-end, basta carregar a lista em `frontend/src/context/AppContext.jsx` (estado `gamesData`) e enviar o cadastro em `createGame`.
+- **Tornar-se desenvolvedor:** a janela pede nome do estúdio e bio. Para enviar ao back-end, crie a rota abaixo e defina `VITE_DEVELOPER_API=true` no `.env` do frontend. A função já está pronta em `frontend/src/utils/api.js` (`cadastrarDesenvolvedor`).
+
+```
+POST /desenvolvedor
+Corpo:   { "id_usuario": 1, "nome_estudio": "Pixel Forge", "bio": "..." }
+Sucesso: { "desenvolvedor": { "nome_estudio": "Pixel Forge", "bio": "..." } }
+Erro:    { "mensagem": "texto do erro" }   (status 4xx/5xx)
+```
+
 ## Limitações conhecidas
 
 - As rotas do backend ainda não usam autenticação por token (JWT).

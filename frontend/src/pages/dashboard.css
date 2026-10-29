@@ -217,3 +217,9 @@
 .dash-bar-selected .dash-bar-info a {
   color: var(--accent);
 }
+
+.dash-bio {
+  max-width: 640px;
+  color: var(--white);
+  line-height: 1.6;
+}

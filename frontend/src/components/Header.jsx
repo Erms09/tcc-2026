@@ -157,6 +157,10 @@ export default function Header({
                   <strong>{user.name}</strong>
                   <span>{user.email}</span>
 
+                  {user.role === "desenvolvedor" && user.studioName && (
+                    <span>🎮 {user.studioName}</span>
+                  )}
+
                   <span className="profile-role-badge">
                     {user.role === "desenvolvedor" ? "Desenvolvedor" : "Jogador"}
                   </span>
