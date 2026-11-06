@@ -67,7 +67,7 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 //
 // Rota do back-end: POST /jogos
 //   Corpo: { nome, descricao, versao, preco, url_capa, link_download,
-//            id_desenvolvedor, id_genero, id_subgenero }
+//            id_desenvolvedor, id_genero }
 //   Sucesso (201): { message, jogo: { id, ... } }
 //
 // Para ligar, defina VITE_GAMES_API=true no .env do frontend e preencha
@@ -96,8 +96,7 @@ export function cadastrarJogo({
       url_capa: coverUrl,
       link_download: downloadUrl || null,
       id_desenvolvedor: idDesenvolvedor,
-      id_genero: idGenero,
-      id_subgenero: null
+      id_genero: idGenero
     })
   });
 }
