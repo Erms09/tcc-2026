@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { games } from "../data";
+import { games, genres } from "../data";
 import { PALETTES } from "../utils/palettes";
 import {
   loadStoredState,
@@ -18,6 +18,8 @@ import {
 import {
   cadastrarDesenvolvedor,
   cadastrarJogo,
+  listarJogos,
+  listarGeneros,
   DEVELOPER_API_ENABLED,
   GAMES_API_ENABLED,
 } from "../utils/api";
@@ -100,6 +102,15 @@ export function AppProvider({ children }) {
     return seeded;
   });
 
+  // Gêneros e jogos vindos do banco
+  const [genreOptions, setGenreOptions] = useState([]);
+  const [gamesLoading, setGamesLoading] = useState(false);
+
+  const genreList = useMemo(
+    () => (genreOptions.length ? ["Todos", ...genreOptions.map((g) => g.name)] : genres),
+    [genreOptions]
+  );
+
   // Mensagens de confirmação (toasts)
   const [toasts, setToasts] = useState([]);
 
@@ -112,6 +123,81 @@ export function AppProvider({ children }) {
     setToasts((previous) => [...previous, { id, message, type }]);
     setTimeout(() => dismissToast(id), 3500);
   }
+
+  // Compara nomes sem acento e sem diferença de maiúsculas ("Ação" = "acao").
+  function normalizeName(text) {
+    return String(text || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  // Busca os jogos e os gêneros no banco e atualiza o catálogo.
+  // Curtidas, visualizações e comentários continuam guardados no navegador.
+  async function loadGames() {
+    if (!GAMES_API_ENABLED) return;
+
+    setGamesLoading(true);
+
+    try {
+      const [gamesResponse, genresResponse] = await Promise.all([
+        listarJogos(),
+        listarGeneros().catch(() => null),
+      ]);
+
+      if (genresResponse?.generos) {
+        setGenreOptions(
+          genresResponse.generos
+            .map((row) => ({ id: row.id, name: row.nome ?? row.name }))
+            .filter((row) => row.name)
+        );
+      }
+
+      setGamesData((previous) =>
+        (gamesResponse.jogos || []).map((row) => {
+          // Só reaproveita dados locais de jogos que já vieram do servidor.
+          const old = previous.find((game) => game.remote && game.id === row.id);
+          const base = old || {
+            type: "",
+            steam: "",
+            github: "",
+            discord: "",
+            rating: 0,
+            isNew: false,
+            views: 0,
+            likes: 0,
+            comments: [],
+          };
+
+          return {
+            ...base,
+            id: row.id,
+            remote: true,
+            title: row.nome,
+            description: row.descricao,
+            version: row.versao,
+            price: Number(row.preco) || 0,
+            coverUrl: row.url_capa || "",
+            downloadUrl: row.link_download || "",
+            developer: row.estudio || "Desenvolvedor",
+            genre: row.genero || "Sem gênero",
+            colors: base.colors || PALETTES[row.id % PALETTES.length],
+          };
+        })
+      );
+    } catch (error) {
+      showToast(error.message || "Não foi possível carregar os jogos.", "error");
+    } finally {
+      setGamesLoading(false);
+    }
+  }
+
+  // Carrega os jogos quando o usuário entra (e ao abrir o site já logado).
+  useEffect(() => {
+    if (user) loadGames();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   // Salva os dados do projeto no navegador.
   useEffect(() => {
@@ -342,7 +428,19 @@ export function AppProvider({ children }) {
     let remoteId = null;
 
     if (GAMES_API_ENABLED) {
-      const payload = { ...fields, idDesenvolvedor: user?.id };
+      const genre = genreOptions.find(
+        (item) => normalizeName(item.name) === normalizeName(fields.genre)
+      );
+
+      if (!genre) {
+        throw new Error(
+          genreOptions.length
+            ? `O gênero "${fields.genre}" não existe no banco.`
+            : "Não foi possível carregar os gêneros do servidor. Recarregue a página e tente de novo."
+        );
+      }
+
+      const payload = { ...fields, idGenero: genre.id, idDesenvolvedor: user?.id };
       let response;
 
       try {
@@ -381,6 +479,7 @@ export function AppProvider({ children }) {
       {
         id: newId,
         ...fields,
+        remote: GAMES_API_ENABLED,
         rating: 0,
         isNew: true,
         colors: palette,
@@ -484,6 +583,8 @@ export function AppProvider({ children }) {
     tourSeen,
     activity,
     toasts,
+    genreList,
+    gamesLoading,
 
     // ações
     setTheme,

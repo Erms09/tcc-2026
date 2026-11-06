@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { genres, types } from "../data";
+import { types } from "../data";
+import { useApp } from "../context/AppContext";
 
 export default function Developer({ onCreateGame, currentUserName }) {
+  const { genreList } = useApp();
   const [form, setForm] = useState({
     title: "", dev: currentUserName || "", genre: "", type: "", description: "",
     version: "", price: "", coverUrl: "", downloadUrl: "",
@@ -122,7 +124,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
               className={errors.genre ? "input-error" : ""}
             >
               <option value="" disabled>Selecione</option>
-              {genres.slice(1).map((g) => <option key={g}>{g}</option>)}
+              {genreList.slice(1).map((g) => <option key={g}>{g}</option>)}
             </select>
             {errors.genre && <span className="field-error" role="alert">{errors.genre}</span>}
           </label>

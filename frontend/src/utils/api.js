@@ -1,5 +1,3 @@
-import { GENRE_IDS } from "../data";
-
 export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 async function request(path, options) {
@@ -71,21 +69,13 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 //
 // Vem ligado por padrão. Para trabalhar sem back-end, coloque
 // VITE_GAMES_API=false no .env do frontend.
-// O id do gênero vem de GENRE_IDS em data.js (ids da tabela de gêneros).
+// O id do gênero vem da lista de gêneros do banco (GET /generos).
 // ---------------------------------------------------------------------------
 export const GAMES_API_ENABLED = import.meta.env.VITE_GAMES_API !== "false";
 
 export function cadastrarJogo({
-  title, description, version, price, coverUrl, downloadUrl, genre, idDesenvolvedor
+  title, description, version, price, coverUrl, downloadUrl, idGenero, idDesenvolvedor
 }) {
-  const idGenero = GENRE_IDS[genre];
-
-  if (!idGenero) {
-    return Promise.reject(
-      new Error("O gênero ainda não foi ligado ao banco. Preencha GENRE_IDS em data.js.")
-    );
-  }
-
   return request("/jogos", {
     method: "POST",
     body: JSON.stringify({
@@ -99,4 +89,15 @@ export function cadastrarJogo({
       id_genero: idGenero
     })
   });
+}
+
+// Lista os jogos do banco: GET /jogos -> { jogos: [{ id, nome, descricao, versao,
+//   preco, url_capa, link_download, id_desenvolvedor, estudio, id_genero, genero }] }
+export function listarJogos() {
+  return request("/jogos");
+}
+
+// Lista os gêneros do banco: GET /generos -> { generos: [{ id, nome }] }
+export function listarGeneros() {
+  return request("/generos");
 }

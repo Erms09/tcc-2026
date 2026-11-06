@@ -29,7 +29,7 @@ export default function Comparar({ gamesData, compareIds, onToggleCompare }) {
             <span className="compare-dev">{game.developer}</span>
             <ul>
               <li><b>Gênero:</b> {game.genre}</li>
-              <li><b>Tipo:</b> {game.type}</li>
+              <li><b>Tipo:</b> {game.type || "—"}</li>
               <li><b>Nota:</b> ★ {game.rating}</li>
               <li><b>Visualizações:</b> {game.views}</li>
               <li><b>Curtidas:</b> {game.likes}</li>

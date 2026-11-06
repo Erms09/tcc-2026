@@ -107,7 +107,7 @@ export default function GameDetails({
         <div className="detail-info detail-info-upgraded">
           <div className="detail-badges">
             <span className="detail-badge">{game.genre}</span>
-            <span className="detail-badge">{game.type}</span>
+            {game.type && <span className="detail-badge">{game.type}</span>}
             {game.version && <span className="detail-badge">v{game.version}</span>}
             <span className="detail-badge">{formatPrice(game.price)}</span>
             {game.isNew && (

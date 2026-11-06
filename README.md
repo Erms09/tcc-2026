@@ -53,8 +53,12 @@ O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`
 | Login e cadastro | `POST /login`, `POST /cadastro` | (sempre ligado) |
 | Tornar-se desenvolvedor | `POST /devs` com `{ id, estudio, bio }` | `VITE_DEVELOPER_API=false` |
 | Cadastro de jogo | `POST /jogos` com `{ nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero }` | `VITE_GAMES_API=false` |
+| Listar jogos | `GET /jogos` → `{ jogos: [...] }` (já com `estudio` e `genero`) | `VITE_GAMES_API=false` |
+| Listar gêneros | `GET /generos` → `{ generos: [{ id, nome }] }` | `VITE_GAMES_API=false` |
 
-**Gêneros:** o back-end pede `id_genero`. Os ids ficam em `GENRE_IDS`, no arquivo `frontend/src/data.js`, e precisam ser iguais aos da tabela de gêneros do banco.
+**Gêneros:** vêm do banco (`GET /generos`). Os filtros do catálogo e o formulário de cadastro usam essa lista, e o `id_genero` é descoberto pelo nome. A rota lê a tabela `generos` (coluna `nome`); se no banco o nome for outro, ajuste em `backend/src/routes/jogos.ts`.
+
+**Catálogo:** os jogos são carregados do banco quando o usuário entra. Curtidas, visualizações, comentários e avaliação ainda ficam guardados no navegador de cada pessoa. O tipo (2D/3D) e os links da Steam, GitHub e Discord não existem no banco, então aparecem só no navegador de quem cadastrou o jogo.
 
 **Estúdio no banco:** o jogo guarda `id_desenvolvedor`, que é o id do usuário na tabela `desenvolvedores`. Se um usuário virou desenvolvedor antes da integração e ainda não está nessa tabela, o front registra o estúdio automaticamente na primeira vez que ele cadastrar um jogo.
 
@@ -66,8 +70,6 @@ O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`
 ```
 
 Enquanto isso não existir, o estúdio e a bio também ficam guardados neste navegador.
-
-**Listar jogos (pendente):** os jogos cadastrados são enviados ao banco, mas o catálogo ainda lê os jogos guardados no navegador. Quando houver uma rota de listagem, carregue-a no estado `gamesData` de `frontend/src/context/AppContext.jsx`.
 
 ## Limitações conhecidas
 

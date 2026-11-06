@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
 import GameCard from "../components/GameCard";
-import { genres, types } from "../data";
+import { types } from "../data";
+import { useApp } from "../context/AppContext";
 
 export default function Catalog({ gamesData, favorites, onToggleFavorite, compareIds, onToggleCompare }) {
+  const { genreList, gamesLoading } = useApp();
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("Todos");
   const [type, setType] = useState("Todos");
@@ -130,7 +132,7 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
             placeholder="🔎  Buscar jogo ou desenvolvedor..."
           />
           <select aria-label="Filtrar por gênero" value={genre} onChange={(e) => setGenre(e.target.value)}>
-            {genres.map((item) => <option key={item}>{item}</option>)}
+            {genreList.map((item) => <option key={item}>{item}</option>)}
           </select>
           <select aria-label="Filtrar por tipo" value={type} onChange={(e) => setType(e.target.value)}>
             {types.map((item) => <option key={item}>{item}</option>)}
@@ -155,7 +157,9 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
           </div>
         ) : (
           <div className="empty-state">
-            {gamesData.length === 0
+            {gamesData.length === 0 && gamesLoading
+              ? "Carregando jogos..."
+              : gamesData.length === 0
               ? "Ainda não há jogos publicados. Os primeiros projetos dos desenvolvedores vão aparecer aqui."
               : "Nenhum jogo encontrado com esses filtros."}
           </div>

@@ -61,7 +61,7 @@ export default function GameCard({ game, isFavorite, onToggleFavorite, view, isH
         <p>{game.developer}</p>
         <div className="tags">
           <span>{game.genre}</span>
-          <span>{game.type}</span>
+          {game.type && <span>{game.type}</span>}
           <span>{formatPrice(game.price)}</span>
         </div>
         <div className="card-stats">
