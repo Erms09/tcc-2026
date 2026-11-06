@@ -14,8 +14,7 @@ router.post('/jogos', async (req: Request, res: Response) => {
       url_capa,
       link_download,
       id_desenvolvedor,
-      id_genero,
-      id_subgenero
+      id_genero
     } = req.body;
 
     // Validação do jogo
@@ -35,8 +34,7 @@ router.post('/jogos', async (req: Request, res: Response) => {
           url_capa,
           link_download,
           id_desenvolvedor,
-          id_genero,
-          id_subgenero: id_subgenero || null
+          id_genero
         }
       ])
       .select();
