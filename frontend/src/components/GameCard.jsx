@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import GameCover from "./GameCover";
+import { formatPrice } from "../utils/format";
 
 export default function GameCard({ game, isFavorite, onToggleFavorite, view, isHighlight, isTrending, isComparing, onToggleCompare }) {
   function handleFavoriteClick(e) {
@@ -30,7 +31,8 @@ export default function GameCard({ game, isFavorite, onToggleFavorite, view, isH
               className={`compare-btn ${isComparing ? "active" : ""}`}
               onClick={handleCompareClick}
               type="button"
-              aria-label="Comparar jogo"
+              aria-label={`Comparar ${game.title}`}
+              aria-pressed={Boolean(isComparing)}
               title="Adicionar à comparação"
             >
               ⇄
@@ -40,7 +42,8 @@ export default function GameCard({ game, isFavorite, onToggleFavorite, view, isH
             className={`favorite-btn ${isFavorite ? "active" : ""}`}
             onClick={handleFavoriteClick}
             type="button"
-            aria-label="Favoritar jogo"
+            aria-label={isFavorite ? `Remover ${game.title} dos favoritos` : `Favoritar ${game.title}`}
+            aria-pressed={Boolean(isFavorite)}
           >
             {isFavorite ? "♥" : "♡"}
           </button>
@@ -59,6 +62,7 @@ export default function GameCard({ game, isFavorite, onToggleFavorite, view, isH
         <div className="tags">
           <span>{game.genre}</span>
           <span>{game.type}</span>
+          <span>{formatPrice(game.price)}</span>
         </div>
         <div className="card-stats">
           <span>👁 {game.views}</span>

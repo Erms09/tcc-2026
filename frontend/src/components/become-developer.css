@@ -93,3 +93,22 @@
   from { opacity: 0; transform: translateY(12px) scale(.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+@media (max-width: 520px) {
+  .dev-modal-overlay {
+    align-items: end;
+    padding: 12px;
+  }
+
+  .dev-modal {
+    padding: 24px 20px;
+  }
+
+  .dev-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dev-modal-actions button {
+    width: 100%;
+  }
+}

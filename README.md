@@ -44,17 +44,30 @@ Para apontar para outro endereço de backend, defina `VITE_API_URL` no ambiente 
 
 Login e cadastro, catálogo com filtros, detalhes do jogo (curtidas, comentários, favoritos), ranking, comparador, favoritos, histórico, notificações, comunidade, novidades, perfil de estúdio, cadastro de jogo e dashboard do desenvolvedor.
 
-## Integração com o back-end (a fazer)
+## Integração com o back-end
 
-- **Jogos:** o catálogo começa vazio. Os jogos cadastrados pelos desenvolvedores ficam hoje no navegador (`localStorage`). Quando houver back-end, basta carregar a lista em `frontend/src/context/AppContext.jsx` (estado `gamesData`) e enviar o cadastro em `createGame`.
-- **Tornar-se desenvolvedor:** a janela pede nome do estúdio e bio. Para enviar ao back-end, crie a rota abaixo e defina `VITE_DEVELOPER_API=true` no `.env` do frontend. A função já está pronta em `frontend/src/utils/api.js` (`cadastrarDesenvolvedor`).
+O front funciona sozinho (dados no navegador) e tem pontos prontos para ligar ao back-end. Cada ponto é ativado por uma variável no `.env` do frontend.
+
+| Recurso | Variável | Onde está o código |
+|---|---|---|
+| Login e cadastro | (sempre ligado) | `frontend/src/utils/api.js` |
+| Tornar-se desenvolvedor | `VITE_DEVELOPER_API=true` | `cadastrarDesenvolvedor` em `api.js` |
+| Cadastro de jogo | `VITE_GAMES_API=true` | `cadastrarJogo` em `api.js` |
+
+**Cadastro de jogo (`POST /jogos`):** o front já envia `nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero`. Falta preencher `GENRE_IDS` em `frontend/src/data.js` com os ids da tabela de gêneros.
+
+**Tornar-se desenvolvedor:** a função `cadastrarDesenvolvedor` foi escrita para `POST /desenvolvedor` com `{ id_usuario, nome_estudio, bio }`. O back-end implementou `POST /devs` com `{ id, estudio, bio }`, então é preciso ajustar `api.js` para esse formato antes de ligar a variável.
+
+**Login (pendente no back-end):** para o desenvolvedor continuar como desenvolvedor depois de sair e entrar, a resposta do `POST /login` deve trazer o estúdio:
 
 ```
-POST /desenvolvedor
-Corpo:   { "id_usuario": 1, "nome_estudio": "Pixel Forge", "bio": "..." }
-Sucesso: { "desenvolvedor": { "nome_estudio": "Pixel Forge", "bio": "..." } }
-Erro:    { "mensagem": "texto do erro" }   (status 4xx/5xx)
+{ "usuario": { "id": 1, "nome": "...", "email": "...",
+               "desenvolvedor": { "estudio": "Pixel Forge", "bio": "..." } } }   // ou "desenvolvedor": null
 ```
+
+Enquanto isso não existir, o estúdio e a bio ficam guardados neste navegador.
+
+**Listar jogos:** o catálogo começa vazio e os jogos ficam no navegador. Quando houver uma rota de listagem, carregue-a no estado `gamesData` de `frontend/src/context/AppContext.jsx`.
 
 ## Limitações conhecidas
 

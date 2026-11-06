@@ -49,7 +49,16 @@ export default function Auth({ onLogin }) {
           : await cadastrarUsuario({ nome: name.trim(), email, senha: password });
 
       const usuario = result.usuario;
-      onLogin({ id: usuario.id, name: usuario.nome, email: usuario.email, role: "jogador" });
+      // Se o back-end já informar que o usuário é desenvolvedor, usa esses dados.
+      // Formato esperado: usuario.desenvolvedor = { estudio, bio } (ou null).
+      onLogin({
+        id: usuario.id,
+        name: usuario.nome,
+        email: usuario.email,
+        role: "jogador",
+        studioName: usuario.desenvolvedor?.estudio,
+        bio: usuario.desenvolvedor?.bio,
+      });
       navigate("/catalogo");
     } catch (err) {
       setServerError(err.message);
@@ -108,7 +117,7 @@ export default function Auth({ onLogin }) {
                   onChange={(e) => setName(e.target.value)}
                   className={errors.name ? "input-error" : ""}
                 />
-                {errors.name && <span className="field-error">{errors.name}</span>}
+                {errors.name && <span className="field-error" role="alert">{errors.name}</span>}
               </label>
             )}
 
@@ -120,7 +129,7 @@ export default function Auth({ onLogin }) {
                 onChange={(e) => setEmail(e.target.value)}
                 className={errors.email ? "input-error" : ""}
               />
-              {errors.email && <span className="field-error">{errors.email}</span>}
+              {errors.email && <span className="field-error" role="alert">{errors.email}</span>}
             </label>
 
             <label>Senha
@@ -131,7 +140,7 @@ export default function Auth({ onLogin }) {
                 onChange={(e) => setPassword(e.target.value)}
                 className={errors.password ? "input-error" : ""}
               />
-              {errors.password && <span className="field-error">{errors.password}</span>}
+              {errors.password && <span className="field-error" role="alert">{errors.password}</span>}
             </label>
 
             {serverError && <div className="server-error">{serverError}</div>}

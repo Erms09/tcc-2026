@@ -284,6 +284,9 @@ export default function Dashboard({ user, gamesData, visitHistory }) {
             </div>
 
             <LineChart data={monthly} />
+            <p className="sr-only">
+              {`Visitas por mês: ${monthly.map((m) => `${m.label} ${m.count}`).join(", ")}.`}
+            </p>
 
 
             {monthlyTotal === 0 && (

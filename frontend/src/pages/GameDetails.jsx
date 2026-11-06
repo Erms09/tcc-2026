@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import GameCover from "../components/GameCover";
 import GameCard from "../components/GameCard";
 import NotFound from "./NotFound";
+import { formatPrice } from "../utils/format";
 
 export default function GameDetails({
   gamesData,
@@ -107,6 +108,8 @@ export default function GameDetails({
           <div className="detail-badges">
             <span className="detail-badge">{game.genre}</span>
             <span className="detail-badge">{game.type}</span>
+            {game.version && <span className="detail-badge">v{game.version}</span>}
+            <span className="detail-badge">{formatPrice(game.price)}</span>
             {game.isNew && (
               <span className="detail-badge detail-badge-new">
                 NOVO
@@ -164,6 +167,17 @@ export default function GameDetails({
           </p>
 
           <div className="detail-actions detail-actions-upgraded">
+            {game.downloadUrl && (
+              <a
+                className="primary-button detail-play-button"
+                href={game.downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                ⬇ Baixar jogo
+              </a>
+            )}
+
             {game.steam && (
               <a
                 className="primary-button detail-play-button"

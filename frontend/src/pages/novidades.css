@@ -35,3 +35,13 @@
 .news-highlight small {
   color: var(--muted);
 }
+
+@media (max-width: 650px) {
+  .news-section {
+    margin-top: 30px;
+  }
+
+  .news-highlight a {
+    font-size: 1.2rem;
+  }
+}

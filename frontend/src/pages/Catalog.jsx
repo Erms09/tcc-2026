@@ -124,14 +124,15 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
 
         <section className="filters">
           <input
+            aria-label="Buscar jogo ou desenvolvedor"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="🔎  Buscar jogo ou desenvolvedor..."
           />
-          <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+          <select aria-label="Filtrar por gênero" value={genre} onChange={(e) => setGenre(e.target.value)}>
             {genres.map((item) => <option key={item}>{item}</option>)}
           </select>
-          <select value={type} onChange={(e) => setType(e.target.value)}>
+          <select aria-label="Filtrar por tipo" value={type} onChange={(e) => setType(e.target.value)}>
             {types.map((item) => <option key={item}>{item}</option>)}
           </select>
         </section>

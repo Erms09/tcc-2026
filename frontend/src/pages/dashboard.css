@@ -63,8 +63,10 @@
 
 .dash-chart {
   width: 100%;
+  max-width: 760px;
   height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 .dash-grid {
@@ -222,4 +224,52 @@
   max-width: 640px;
   color: var(--white);
   line-height: 1.6;
+}
+
+@media (max-width: 650px) {
+  .dash-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dash-filters select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .dash-period {
+    justify-content: space-between;
+  }
+
+  .dash-period button {
+    flex: 1;
+    padding: 9px 6px;
+  }
+
+  .dash-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-card {
+    padding: 16px;
+  }
+
+  .dash-card strong {
+    font-size: 1.6rem;
+  }
+
+  .dash-panel {
+    padding: 16px;
+  }
+
+  .dash-bar-info {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 650px) {
+  .dash-axis {
+    font-size: 20px;
+  }
 }

@@ -9,8 +9,18 @@ import { useNavigate } from "react-router-dom";
 
 import { games } from "../data";
 import { PALETTES } from "../utils/palettes";
-import { loadStoredState, STORAGE_KEY } from "../utils/storage";
-import { cadastrarDesenvolvedor, DEVELOPER_API_ENABLED } from "../utils/api";
+import {
+  loadStoredState,
+  loadDevProfile,
+  saveDevProfile,
+  STORAGE_KEY,
+} from "../utils/storage";
+import {
+  cadastrarDesenvolvedor,
+  cadastrarJogo,
+  DEVELOPER_API_ENABLED,
+  GAMES_API_ENABLED,
+} from "../utils/api";
 
 const AppContext = createContext(null);
 
@@ -327,8 +337,20 @@ export function AppProvider({ children }) {
     }
   }
 
-  function createGame(fields) {
-    const newId = Math.max(0, ...gamesData.map((game) => game.id)) + 1;
+  // Lança um erro (com mensagem) se o back-end recusar o cadastro.
+  async function createGame(fields) {
+    let remoteId = null;
+
+    if (GAMES_API_ENABLED) {
+      const response = await cadastrarJogo({
+        ...fields,
+        idDesenvolvedor: user?.id,
+      });
+      remoteId = response?.jogo?.id ?? null;
+    }
+
+    const newId =
+      remoteId ?? Math.max(0, ...gamesData.map((game) => game.id)) + 1;
     const palette = PALETTES[newId % PALETTES.length];
 
     setGamesData((previous) => [
@@ -361,7 +383,17 @@ export function AppProvider({ children }) {
   }
 
   function handleLogin(userData) {
-    setUser(userData);
+    // O estúdio vem do back-end (quando disponível) ou do que ficou guardado
+    // neste navegador. Quem tem estúdio continua sendo desenvolvedor.
+    const profile = userData.studioName
+      ? { studioName: userData.studioName, bio: userData.bio || "" }
+      : loadDevProfile(userData.id);
+
+    setUser(
+      profile
+        ? { ...userData, role: "desenvolvedor", ...profile }
+        : { ...userData, role: "jogador" }
+    );
     setTourSeen(false);
   }
 
@@ -400,6 +432,8 @@ export function AppProvider({ children }) {
     setUser((previous) =>
       previous ? { ...previous, role: "desenvolvedor", ...saved } : previous
     );
+
+    if (user?.id) saveDevProfile(user.id, saved);
 
     setDevModalOpen(false);
     showToast(`Bem-vindo, ${saved.studioName}! Agora você pode publicar jogos.`);

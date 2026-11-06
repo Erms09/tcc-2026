@@ -44,3 +44,27 @@ export function loadStoredState() {
     return null;
   }
 }
+
+// Estúdio e bio de cada desenvolvedor, guardados por id de usuário.
+// Enquanto o login não devolver esses dados, é isso que faz o desenvolvedor
+// continuar sendo desenvolvedor depois de sair e entrar de novo.
+const DEV_PROFILES_KEY = "indiehub-dev-profiles-v1";
+
+export function loadDevProfile(userId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(DEV_PROFILES_KEY) || "{}");
+    return all[userId] || null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveDevProfile(userId, profile) {
+  try {
+    const all = JSON.parse(localStorage.getItem(DEV_PROFILES_KEY) || "{}");
+    all[userId] = profile;
+    localStorage.setItem(DEV_PROFILES_KEY, JSON.stringify(all));
+  } catch {
+    // sem espaço ou bloqueado: segue sem guardar
+  }
+}

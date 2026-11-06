@@ -135,7 +135,7 @@ export default function BecomeDeveloperModal() {
             disabled={loading}
           />
           {errors.studioName && (
-            <span className="field-error">{errors.studioName}</span>
+            <span className="field-error" role="alert">{errors.studioName}</span>
           )}
         </label>
 
@@ -154,7 +154,7 @@ export default function BecomeDeveloperModal() {
           <span className="dev-modal-counter">
             {bio.length}/{BIO_MAX}
           </span>
-          {errors.bio && <span className="field-error">{errors.bio}</span>}
+          {errors.bio && <span className="field-error" role="alert">{errors.bio}</span>}
         </label>
 
         {serverError && (

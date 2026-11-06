@@ -18,6 +18,7 @@ export default function Header({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const profileRef = useRef(null);
   const moreRef = useRef(null);
   const location = useLocation();
@@ -41,6 +42,7 @@ export default function Header({
       if (event.key === "Escape") {
         setMenuOpen(false);
         setMoreOpen(false);
+        setMobileOpen(false);
       }
     }
 
@@ -57,6 +59,7 @@ export default function Header({
   useEffect(() => {
     setMenuOpen(false);
     setMoreOpen(false);
+    setMobileOpen(false);
   }, [location.pathname]);
 
   return (
@@ -201,7 +204,40 @@ export default function Header({
             )}
           </div>
         )}
+
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={mobileOpen}
+          aria-controls="menu-mobile"
+          onClick={() => setMobileOpen((previous) => !previous)}
+        >
+          {mobileOpen ? "✕" : "☰"}
+        </button>
       </div>
+
+      {mobileOpen && (
+        <nav className="mobile-nav" id="menu-mobile" aria-label="Menu principal">
+          <NavLink to="/catalogo" end>Catálogo</NavLink>
+          <NavLink to="/novidades">Novidades</NavLink>
+          <NavLink to="/ranking">Ranking</NavLink>
+          <NavLink to="/favoritos">Favoritos</NavLink>
+          <NavLink to="/comunidade">Comunidade</NavLink>
+          {user?.role === "desenvolvedor" && (
+            <>
+              <NavLink to="/dashboard">Dashboard</NavLink>
+              <NavLink to="/desenvolvedor">Cadastrar jogo</NavLink>
+            </>
+          )}
+          <NavLink to="/historico">Histórico</NavLink>
+          <NavLink to="/notificacoes">
+            Notificações
+            {unreadCount > 0 && <span className="nav-badge">{unreadCount}</span>}
+          </NavLink>
+          <NavLink to="/sobre">Sobre</NavLink>
+        </nav>
+      )}
     </header>
   );
 }
