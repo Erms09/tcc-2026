@@ -342,10 +342,33 @@ export function AppProvider({ children }) {
     let remoteId = null;
 
     if (GAMES_API_ENABLED) {
-      const response = await cadastrarJogo({
-        ...fields,
-        idDesenvolvedor: user?.id,
-      });
+      const payload = { ...fields, idDesenvolvedor: user?.id };
+      let response;
+
+      try {
+        response = await cadastrarJogo(payload);
+      } catch (error) {
+        // Quem virou desenvolvedor antes da integração pode não ter o estúdio
+        // salvo no banco. Registra o estúdio e tenta o jogo mais uma vez.
+        const missingStudio = /foreign key|desenvolvedor/i.test(error.message || "");
+
+        if (!(DEVELOPER_API_ENABLED && missingStudio && user?.id)) throw error;
+
+        try {
+          await cadastrarDesenvolvedor({
+            idUsuario: user.id,
+            nomeEstudio: user.studioName || user.name,
+            bio: user.bio || "",
+          });
+        } catch {
+          throw new Error(
+            "Seu estúdio ainda não está registrado no servidor. Tente de novo em instantes."
+          );
+        }
+
+        response = await cadastrarJogo(payload);
+      }
+
       remoteId = response?.jogo?.id ?? null;
     }
 
@@ -423,7 +446,7 @@ export function AppProvider({ children }) {
       // Usa o que o back-end devolveu, se vier algo.
       if (response?.desenvolvedor) {
         saved = {
-          studioName: response.desenvolvedor.nome_estudio || studioName,
+          studioName: response.desenvolvedor.estudio || studioName,
           bio: response.desenvolvedor.bio ?? bio,
         };
       }

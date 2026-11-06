@@ -46,28 +46,28 @@ Login e cadastro, catálogo com filtros, detalhes do jogo (curtidas, comentário
 
 ## Integração com o back-end
 
-O front funciona sozinho (dados no navegador) e tem pontos prontos para ligar ao back-end. Cada ponto é ativado por uma variável no `.env` do frontend.
+O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`). Para trabalhar só com o front, desligue as integrações no `.env` do frontend (veja `frontend/.env.example`).
 
-| Recurso | Variável | Onde está o código |
+| Recurso | Rota | Variável para desligar |
 |---|---|---|
-| Login e cadastro | (sempre ligado) | `frontend/src/utils/api.js` |
-| Tornar-se desenvolvedor | `VITE_DEVELOPER_API=true` | `cadastrarDesenvolvedor` em `api.js` |
-| Cadastro de jogo | `VITE_GAMES_API=true` | `cadastrarJogo` em `api.js` |
+| Login e cadastro | `POST /login`, `POST /cadastro` | (sempre ligado) |
+| Tornar-se desenvolvedor | `POST /devs` com `{ id, estudio, bio }` | `VITE_DEVELOPER_API=false` |
+| Cadastro de jogo | `POST /jogos` com `{ nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero }` | `VITE_GAMES_API=false` |
 
-**Cadastro de jogo (`POST /jogos`):** o front já envia `nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero`. Falta preencher `GENRE_IDS` em `frontend/src/data.js` com os ids da tabela de gêneros.
+**Gêneros:** o back-end pede `id_genero`. Os ids ficam em `GENRE_IDS`, no arquivo `frontend/src/data.js`, e precisam ser iguais aos da tabela de gêneros do banco.
 
-**Tornar-se desenvolvedor:** a função `cadastrarDesenvolvedor` foi escrita para `POST /desenvolvedor` com `{ id_usuario, nome_estudio, bio }`. O back-end implementou `POST /devs` com `{ id, estudio, bio }`, então é preciso ajustar `api.js` para esse formato antes de ligar a variável.
+**Estúdio no banco:** o jogo guarda `id_desenvolvedor`, que é o id do usuário na tabela `desenvolvedores`. Se um usuário virou desenvolvedor antes da integração e ainda não está nessa tabela, o front registra o estúdio automaticamente na primeira vez que ele cadastrar um jogo.
 
-**Login (pendente no back-end):** para o desenvolvedor continuar como desenvolvedor depois de sair e entrar, a resposta do `POST /login` deve trazer o estúdio:
+**Login (pendente no back-end):** para o desenvolvedor continuar como desenvolvedor depois de sair e entrar em outro navegador, a resposta do `POST /login` deve trazer o estúdio:
 
 ```
 { "usuario": { "id": 1, "nome": "...", "email": "...",
                "desenvolvedor": { "estudio": "Pixel Forge", "bio": "..." } } }   // ou "desenvolvedor": null
 ```
 
-Enquanto isso não existir, o estúdio e a bio ficam guardados neste navegador.
+Enquanto isso não existir, o estúdio e a bio também ficam guardados neste navegador.
 
-**Listar jogos:** o catálogo começa vazio e os jogos ficam no navegador. Quando houver uma rota de listagem, carregue-a no estado `gamesData` de `frontend/src/context/AppContext.jsx`.
+**Listar jogos (pendente):** os jogos cadastrados são enviados ao banco, mas o catálogo ainda lê os jogos guardados no navegador. Quando houver uma rota de listagem, carregue-a no estado `gamesData` de `frontend/src/context/AppContext.jsx`.
 
 ## Limitações conhecidas
 

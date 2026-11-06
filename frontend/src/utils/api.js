@@ -40,23 +40,22 @@ export function logarUsuario({ email, senha }) {
 // ---------------------------------------------------------------------------
 // Tornar-se desenvolvedor
 //
-// Contrato esperado do back-end (ainda não implementado):
-//   POST /desenvolvedor
-//   Corpo:    { id_usuario, nome_estudio, bio }
-//   Sucesso:  200/201 com { desenvolvedor: { nome_estudio, bio } }
-//   Erro:     status 4xx/5xx com { mensagem: "texto do erro" }
+// Rota do back-end: POST /devs
+//   Corpo:    { id, estudio, bio }   (id = id do usuário)
+//   Sucesso:  201 com { mensagem, desenvolvedor: { id, estudio, bio } }
+//   Erro:     status 4xx/5xx com { erro: "texto do erro" }
 //
-// Para ligar ao back-end, crie a rota e defina VITE_DEVELOPER_API=true
-// no .env do frontend. Enquanto isso, os dados ficam só no navegador.
+// Vem ligado por padrão. Para trabalhar sem back-end, coloque
+// VITE_DEVELOPER_API=false no .env do frontend.
 // ---------------------------------------------------------------------------
-export const DEVELOPER_API_ENABLED = import.meta.env.VITE_DEVELOPER_API === "true";
+export const DEVELOPER_API_ENABLED = import.meta.env.VITE_DEVELOPER_API !== "false";
 
 export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
-  return request("/desenvolvedor", {
+  return request("/devs", {
     method: "POST",
     body: JSON.stringify({
-      id_usuario: idUsuario,
-      nome_estudio: nomeEstudio,
+      id: idUsuario,
+      estudio: nomeEstudio,
       bio
     })
   });
@@ -70,10 +69,11 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 //            id_desenvolvedor, id_genero }
 //   Sucesso (201): { message, jogo: { id, ... } }
 //
-// Para ligar, defina VITE_GAMES_API=true no .env do frontend e preencha
-// GENRE_IDS em data.js com os ids da tabela de gêneros.
+// Vem ligado por padrão. Para trabalhar sem back-end, coloque
+// VITE_GAMES_API=false no .env do frontend.
+// O id do gênero vem de GENRE_IDS em data.js (ids da tabela de gêneros).
 // ---------------------------------------------------------------------------
-export const GAMES_API_ENABLED = import.meta.env.VITE_GAMES_API === "true";
+export const GAMES_API_ENABLED = import.meta.env.VITE_GAMES_API !== "false";
 
 export function cadastrarJogo({
   title, description, version, price, coverUrl, downloadUrl, genre, idDesenvolvedor
