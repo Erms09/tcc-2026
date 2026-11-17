@@ -54,6 +54,7 @@ O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`
 | Tornar-se desenvolvedor | `POST /devs` com `{ id, estudio, bio }` | `VITE_DEVELOPER_API=false` |
 | Cadastro de jogo | `POST /jogos` com `{ nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero, tipo }` | `VITE_GAMES_API=false` |
 | Listar jogos | `GET /jogos` → `{ jogos: [...] }` (já com `estudio` e `genero`) | `VITE_GAMES_API=false` |
+| Favoritos | `GET /favoritos/:idUsuario` → `{ favoritos: [id_jogo] }` e `PUT /favoritos` com `{ id_usuario, id_jogo, favorito }` (tabela `bibliotecas`) | `VITE_GAMES_API=false` |
 | Listar gêneros | `GET /generos` → `{ generos: [{ id, nome }] }` | `VITE_GAMES_API=false` |
 
 **Gêneros:** vêm do banco (`GET /generos`). Os filtros do catálogo e o formulário de cadastro usam essa lista, e o `id_genero` é descoberto pelo nome. A rota lê a tabela `generos` (coluna `nome`); se no banco o nome for outro, ajuste em `backend/src/routes/jogos.ts`.
@@ -62,14 +63,11 @@ O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`
 
 **Estúdio no banco:** o jogo guarda `id_desenvolvedor`, que é o id do usuário na tabela `desenvolvedores`. Se um usuário virou desenvolvedor antes da integração e ainda não está nessa tabela, o front registra o estúdio automaticamente na primeira vez que ele cadastrar um jogo.
 
-**Login (pendente no back-end):** para o desenvolvedor continuar como desenvolvedor depois de sair e entrar em outro navegador, a resposta do `POST /login` deve trazer o estúdio:
+**Login:** a resposta do `POST /login` traz o estúdio quando o usuário é desenvolvedor: `{ usuario: { id, nome, email, desenvolvedor: { estudio, bio } | null } }`. Assim o papel de desenvolvedor vale em qualquer navegador.
 
-```
-{ "usuario": { "id": 1, "nome": "...", "email": "...",
-               "desenvolvedor": { "estudio": "Pixel Forge", "bio": "..." } } }   // ou "desenvolvedor": null
-```
+**Favoritos:** ficam na tabela `bibliotecas` (`favorito = true`; a linha nova entra com `status = 'na_lista'`) e seguem o usuário em qualquer navegador. Curtidas, comentários, visualizações e avaliação ainda ficam guardados no navegador.
 
-Enquanto isso não existir, o estúdio e a bio também ficam guardados neste navegador.
+**Tour de boas-vindas:** aparece uma vez por usuário em cada navegador.
 
 ## Limitações conhecidas
 

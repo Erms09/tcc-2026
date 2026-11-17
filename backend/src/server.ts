@@ -4,6 +4,7 @@ import cadastroRouter from './routes/cadastro.js';
 import loginRouter from './routes/login.js';
 import devsRouter from './routes/devs.js';
 import jogosRouter from './routes/jogos.js';
+import favoritosRouter from './routes/favoritos.js';
 import { supabase } from './config/supabase.js';
 
 const server = express();
@@ -15,6 +16,7 @@ server.use(cadastroRouter);
 server.use(loginRouter);
 server.use(devsRouter);
 server.use(jogosRouter);
+server.use(favoritosRouter);
 
 supabase
   .from('usuarios')

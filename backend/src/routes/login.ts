@@ -58,12 +58,20 @@ router.post('/login', async (req, res) => {
         });
     }
 
+    // Se o usuário for desenvolvedor, devolve o estúdio e a bio junto
+    const { data: dev } = await supabase
+        .from('desenvolvedores')
+        .select('estudio, bio')
+        .eq('id', data.id)
+        .maybeSingle();
+
     res.status(200).json({
         mensagem: 'Usuário encontrado!',
         usuario: {
             id: data.id,
             nome: data.nome,
-            email: data.email
+            email: data.email,
+            desenvolvedor: dev ? { estudio: dev.estudio, bio: dev.bio } : null
         }
     });
 });

@@ -62,7 +62,7 @@ export default function App() {
     tourSeen,
     activity,
     setTheme,
-    setTourSeen,
+    markTourSeen,
     setCompareIds,
     registerView,
     removeVisit,
@@ -300,7 +300,7 @@ export default function App() {
       )}
 
       {!isAuthScreen && user && !tourSeen && (
-        <TourModal onClose={() => setTourSeen(true)} />
+        <TourModal onClose={markTourSeen} />
       )}
 
       <BecomeDeveloperModal />

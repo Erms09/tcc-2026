@@ -68,3 +68,26 @@ export function saveDevProfile(userId, profile) {
     // sem espaço ou bloqueado: segue sem guardar
   }
 }
+
+// Quais usuários já viram o tour de boas-vindas (guardado por id de usuário,
+// para não reaparecer a cada login).
+const TOUR_KEY = "indiehub-tour-seen-v1";
+
+export function hasSeenTour(userId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(TOUR_KEY) || "{}");
+    return Boolean(all[userId]);
+  } catch {
+    return false;
+  }
+}
+
+export function markTourSeenFor(userId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(TOUR_KEY) || "{}");
+    all[userId] = true;
+    localStorage.setItem(TOUR_KEY, JSON.stringify(all));
+  } catch {
+    // sem espaço ou bloqueado: o tour pode reaparecer
+  }
+}

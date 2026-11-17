@@ -13,6 +13,8 @@ import {
   loadStoredState,
   loadDevProfile,
   saveDevProfile,
+  hasSeenTour,
+  markTourSeenFor,
   STORAGE_KEY,
 } from "../utils/storage";
 import {
@@ -20,6 +22,8 @@ import {
   cadastrarJogo,
   listarJogos,
   listarGeneros,
+  listarFavoritos,
+  definirFavorito,
   DEVELOPER_API_ENABLED,
   GAMES_API_ENABLED,
 } from "../utils/api";
@@ -77,8 +81,9 @@ export function AppProvider({ children }) {
     stored ? stored.theme : "dark"
   );
 
+  // O tour de boas-vindas aparece só na primeira vez de cada usuário.
   const [tourSeen, setTourSeen] = useState(() =>
-    stored ? stored.tourSeen : false
+    stored ? Boolean(stored.tourSeen || (stored.user && hasSeenTour(stored.user.id))) : false
   );
 
   const [activity, setActivity] = useState(() => {
@@ -141,10 +146,16 @@ export function AppProvider({ children }) {
     setGamesLoading(true);
 
     try {
-      const [gamesResponse, genresResponse] = await Promise.all([
+      const [gamesResponse, genresResponse, favoritesResponse] = await Promise.all([
         listarJogos(),
         listarGeneros().catch(() => null),
+        user?.id ? listarFavoritos(user.id).catch(() => null) : null,
       ]);
+
+      // Os favoritos do banco valem em qualquer navegador.
+      if (favoritesResponse?.favoritos) {
+        setFavorites(favoritesResponse.favoritos);
+      }
 
       if (genresResponse?.generos) {
         setGenreOptions(
@@ -354,6 +365,21 @@ export function AppProvider({ children }) {
     );
 
     const favoriteGame = gamesData.find((item) => item.id === id);
+
+    // Jogos que vieram do banco: grava o favorito lá também. Se falhar, desfaz.
+    if (GAMES_API_ENABLED && user?.id && favoriteGame?.remote) {
+      definirFavorito({ idUsuario: user.id, idJogo: id, favorito: !wasFavorite }).catch(
+        (error) => {
+          setFavorites((previous) =>
+            wasFavorite
+              ? previous.includes(id) ? previous : [...previous, id]
+              : previous.filter((item) => item !== id)
+          );
+          showToast(error.message || "Não foi possível salvar o favorito.", "error");
+        }
+      );
+    }
+
     showToast(
       wasFavorite
         ? `${favoriteGame ? favoriteGame.title : "Jogo"} removido dos favoritos.`
@@ -517,7 +543,12 @@ export function AppProvider({ children }) {
         ? { ...userData, role: "desenvolvedor", ...profile }
         : { ...userData, role: "jogador" }
     );
-    setTourSeen(false);
+    setTourSeen(hasSeenTour(userData.id));
+  }
+
+  function markTourSeen() {
+    setTourSeen(true);
+    if (user?.id) markTourSeenFor(user.id);
   }
 
   // Controla a janela "Tornar-se desenvolvedor".
@@ -589,7 +620,7 @@ export function AppProvider({ children }) {
 
     // ações
     setTheme,
-    setTourSeen,
+    markTourSeen,
     setCompareIds,
     registerView,
     removeVisit,

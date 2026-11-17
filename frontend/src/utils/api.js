@@ -102,3 +102,24 @@ export function listarJogos() {
 export function listarGeneros() {
   return request("/generos");
 }
+
+// ---------------------------------------------------------------------------
+// Favoritos (tabela "bibliotecas" do banco)
+//   GET /favoritos/:idUsuario  -> { favoritos: [id_jogo, ...] }
+//   PUT /favoritos             -> corpo { id_usuario, id_jogo, favorito: true|false }
+// Usam a mesma chave VITE_GAMES_API dos jogos.
+// ---------------------------------------------------------------------------
+export function listarFavoritos(idUsuario) {
+  return request(`/favoritos/${idUsuario}`);
+}
+
+export function definirFavorito({ idUsuario, idJogo, favorito }) {
+  return request("/favoritos", {
+    method: "PUT",
+    body: JSON.stringify({
+      id_usuario: idUsuario,
+      id_jogo: idJogo,
+      favorito
+    })
+  });
+}
