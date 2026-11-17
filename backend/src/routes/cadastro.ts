@@ -22,7 +22,7 @@ function validarCadastro(nome: string, email: string, senha: string) {
     return 'Senha é obrigatória!';
   }
 
-  if (senha.length < 8) {
+  if (senha.length < 6) {
     return 'A senha deve conter no mínimo 8 caracteres!'
   }
 
