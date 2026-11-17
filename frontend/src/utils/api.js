@@ -64,7 +64,7 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 //
 // Rota do back-end: POST /jogos
 //   Corpo: { nome, descricao, versao, preco, url_capa, link_download,
-//            id_desenvolvedor, id_genero }
+//            id_desenvolvedor, id_genero, tipo }
 //   Sucesso (201): { message, jogo: { id, ... } }
 //
 // Vem ligado por padrão. Para trabalhar sem back-end, coloque
@@ -74,7 +74,7 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 export const GAMES_API_ENABLED = import.meta.env.VITE_GAMES_API !== "false";
 
 export function cadastrarJogo({
-  title, description, version, price, coverUrl, downloadUrl, idGenero, idDesenvolvedor
+  title, description, version, price, coverUrl, downloadUrl, type, idGenero, idDesenvolvedor
 }) {
   return request("/jogos", {
     method: "POST",
@@ -86,13 +86,14 @@ export function cadastrarJogo({
       url_capa: coverUrl,
       link_download: downloadUrl || null,
       id_desenvolvedor: idDesenvolvedor,
-      id_genero: idGenero
+      id_genero: idGenero,
+      tipo: type
     })
   });
 }
 
 // Lista os jogos do banco: GET /jogos -> { jogos: [{ id, nome, descricao, versao,
-//   preco, url_capa, link_download, id_desenvolvedor, estudio, id_genero, genero }] }
+//   preco, url_capa, link_download, id_desenvolvedor, tipo, estudio, id_genero, genero }] }
 export function listarJogos() {
   return request("/jogos");
 }

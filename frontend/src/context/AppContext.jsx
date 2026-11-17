@@ -176,6 +176,7 @@ export function AppProvider({ children }) {
             remote: true,
             title: row.nome,
             description: row.descricao,
+            type: row.tipo || base.type,
             version: row.versao,
             price: Number(row.preco) || 0,
             coverUrl: row.url_capa || "",

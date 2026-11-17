@@ -14,7 +14,8 @@ router.post('/jogos', async (req: Request, res: Response) => {
       url_capa,
       link_download,
       id_desenvolvedor,
-      id_genero
+      id_genero,
+      tipo
     } = req.body;
 
     // Validação do jogo
@@ -34,7 +35,9 @@ router.post('/jogos', async (req: Request, res: Response) => {
           url_capa,
           link_download,
           id_desenvolvedor,
-          id_genero
+          id_genero,
+          // Sem tipo, o banco usa o padrão (2D)
+          ...(tipo ? { tipo } : {})
         }
       ])
       .select();
