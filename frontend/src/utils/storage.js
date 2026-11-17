@@ -91,3 +91,27 @@ export function markTourSeenFor(userId) {
     // sem espaço ou bloqueado: o tour pode reaparecer
   }
 }
+
+// Dados que pertencem a cada conta (notificações, favoritos, curtidas...).
+// Ficam separados por id de usuário para uma conta não ver os dados da outra
+// quando as duas usam o mesmo navegador.
+const USER_DATA_KEY = "indiehub-user-data-v1";
+
+export function loadUserData(userId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(USER_DATA_KEY) || "{}");
+    return all[userId] || null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveUserData(userId, data) {
+  try {
+    const all = JSON.parse(localStorage.getItem(USER_DATA_KEY) || "{}");
+    all[userId] = data;
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(all));
+  } catch {
+    // sem espaço ou bloqueado: segue sem guardar
+  }
+}

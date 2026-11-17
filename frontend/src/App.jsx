@@ -172,7 +172,9 @@ export default function App() {
             path="/historico"
             element={
               <Historico
-                visitHistory={visitHistory}
+                visitHistory={visitHistory.filter(
+                  (visit) => visit.userId === user?.id
+                )}
                 onRemoveVisit={removeVisit}
                 onClearHistory={clearVisitHistory}
               />

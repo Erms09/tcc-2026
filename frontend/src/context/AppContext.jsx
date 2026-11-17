@@ -15,6 +15,8 @@ import {
   saveDevProfile,
   hasSeenTour,
   markTourSeenFor,
+  loadUserData,
+  saveUserData,
   STORAGE_KEY,
 } from "../utils/storage";
 import {
@@ -29,6 +31,20 @@ import {
 } from "../utils/api";
 
 const AppContext = createContext(null);
+
+// Notificação inicial de quem acabou de criar a conta (ou entra pela primeira vez).
+function welcomeNotifications() {
+  return [
+    {
+      id: "welcome-indiehub",
+      type: "welcome",
+      title: "Bem-vindo ao IndieHub!",
+      message: "Explore jogos independentes, conheça estúdios e descubra novas aventuras.",
+      createdAt: new Date().toISOString(),
+      read: false,
+    },
+  ];
+}
 
 // Guarda todo o estado do aplicativo (usuário, jogos, favoritos etc.)
 // e as funções que o alteram. As telas pegam o que precisam com useApp().
@@ -53,16 +69,7 @@ export function AppProvider({ children }) {
     stored ? stored.visitHistory || [] : []
   );
   const [notifications, setNotifications] = useState(() =>
-    stored?.notifications || [
-      {
-        id: "welcome-indiehub",
-        type: "welcome",
-        title: "Bem-vindo ao IndieHub!",
-        message: "Explore jogos independentes, conheça estúdios e descubra novas aventuras.",
-        createdAt: new Date().toISOString(),
-        read: false,
-      },
-    ]
+    stored?.notifications || welcomeNotifications()
   );
 
   const [likedIds, setLikedIds] = useState(() =>
@@ -232,6 +239,17 @@ export function AppProvider({ children }) {
     } catch {
       // O aplicativo continua funcionando se o armazenamento falhar.
     }
+
+    // Guarda à parte o que pertence à conta que está logada.
+    if (user?.id) {
+      saveUserData(user.id, {
+        notifications,
+        likedIds,
+        favorites,
+        visitedIds,
+        compareIds,
+      });
+    }
   }, [
     user,
     gamesData,
@@ -259,6 +277,7 @@ export function AppProvider({ children }) {
       gameId: game.id,
       gameTitle: game.title,
       visitedAt: new Date().toISOString(),
+      userId: user?.id ?? null,
     };
 
     setVisitHistory((previous) => [visit, ...previous]);
@@ -285,9 +304,11 @@ export function AppProvider({ children }) {
     );
   }
 
-  // Apaga todas as visitas registradas.
+  // Apaga as visitas da conta que está logada.
   function clearVisitHistory() {
-    setVisitHistory([]);
+    setVisitHistory((previous) =>
+      previous.filter((visit) => visit.userId !== user?.id)
+    );
   }
 
   function toggleLike(id) {
@@ -528,6 +549,14 @@ export function AppProvider({ children }) {
 
   function handleLogout() {
     setUser(null);
+
+    // Limpa da tela os dados da conta que saiu (ficam guardados para o próximo login dela).
+    setNotifications([]);
+    setLikedIds([]);
+    setFavorites([]);
+    setVisitedIds([]);
+    setCompareIds([]);
+
     navigate("/");
   }
 
@@ -544,6 +573,14 @@ export function AppProvider({ children }) {
         : { ...userData, role: "jogador" }
     );
     setTourSeen(hasSeenTour(userData.id));
+
+    // Cada conta tem os próprios dados. Conta nova começa só com a boas-vindas.
+    const saved = loadUserData(userData.id);
+    setNotifications(saved?.notifications || welcomeNotifications());
+    setLikedIds(saved?.likedIds || []);
+    setFavorites(saved?.favorites || []);
+    setVisitedIds(saved?.visitedIds || []);
+    setCompareIds(saved?.compareIds || []);
   }
 
   function markTourSeen() {
