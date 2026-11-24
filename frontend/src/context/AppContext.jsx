@@ -198,6 +198,7 @@ export function AppProvider({ children }) {
             version: row.versao,
             price: Number(row.preco) || 0,
             coverUrl: row.url_capa || "",
+            screenshots: Array.isArray(row.screenshots) ? row.screenshots : [],
             downloadUrl: row.link_download || "",
             developer: row.estudio || "Desenvolvedor",
             genre: row.genero || "Sem gênero",
