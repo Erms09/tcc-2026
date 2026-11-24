@@ -260,6 +260,16 @@ export default function GameDetails({
           </article>
 
           <article className="detail-about-card">
+            <span className="detail-about-icon">🕹️</span>
+            <h3>Plataformas</h3>
+            <div className="tags detail-tags">
+              {(game.platforms || []).length > 0
+                ? game.platforms.map((platform) => <span key={platform}>{platform}</span>)
+                : <span>Não informado</span>}
+            </div>
+          </article>
+
+          <article className="detail-about-card">
             <span className="detail-about-icon">🏢</span>
             <h3>Desenvolvedor</h3>
             <p>{game.developer}</p>
