@@ -21,7 +21,14 @@ Crie o arquivo `backend/.env` com:
 
 ```
 SUPABASE_URL=<url do projeto no Supabase>
-SUPABASE_KEY=<chave do projeto>
+SUPABASE_KEY=<chave do projeto com permissão de Storage>
+```
+
+No painel do Supabase, abra **Storage** e crie um bucket público chamado `game-media`. O bucket precisa permitir leitura pública; o back-end faz os envios usando `SUPABASE_KEY`. Na tabela `jogos`, adicione a coluna de screenshots executando uma vez no SQL Editor:
+
+```sql
+alter table public.jogos
+add column if not exists screenshots jsonb not null default '[]'::jsonb;
 ```
 
 Depois:
@@ -52,14 +59,14 @@ O front conversa com o back-end (`VITE_API_URL`, padrão `http://localhost:3000`
 |---|---|---|
 | Login e cadastro | `POST /login`, `POST /cadastro` | (sempre ligado) |
 | Tornar-se desenvolvedor | `POST /devs` com `{ id, estudio, bio }` | `VITE_DEVELOPER_API=false` |
-| Cadastro de jogo | `POST /jogos` com `{ nome, descricao, versao, preco, url_capa, link_download, id_desenvolvedor, id_genero, tipo }` | `VITE_GAMES_API=false` |
+| Cadastro de jogo | `POST /jogos` multipart com `capa` e até 6 arquivos `screenshots`, além dos dados do jogo | `VITE_GAMES_API=false` |
 | Listar jogos | `GET /jogos` → `{ jogos: [...] }` (já com `estudio` e `genero`) | `VITE_GAMES_API=false` |
 | Favoritos | `GET /favoritos/:idUsuario` → `{ favoritos: [id_jogo] }` e `PUT /favoritos` com `{ id_usuario, id_jogo, favorito }` (tabela `bibliotecas`) | `VITE_GAMES_API=false` |
 | Listar gêneros | `GET /generos` → `{ generos: [{ id, nome }] }` | `VITE_GAMES_API=false` |
 
 **Gêneros:** vêm do banco (`GET /generos`). Os filtros do catálogo e o formulário de cadastro usam essa lista, e o `id_genero` é descoberto pelo nome. A rota lê a tabela `generos` (coluna `nome`); se no banco o nome for outro, ajuste em `backend/src/routes/jogos.ts`.
 
-**Catálogo:** os jogos são carregados do banco quando o usuário entra. Curtidas, visualizações, comentários e avaliação ainda ficam guardados no navegador de cada pessoa. O **tipo (2D/3D) vem do banco** (coluna `tipo`). Os links da Steam, GitHub e Discord não existem no banco, então aparecem só no navegador de quem cadastrou o jogo.
+**Imagens dos jogos:** a capa e até 6 screenshots são selecionadas como arquivos no computador, enviadas pelo back-end ao bucket público `game-media` do Supabase Storage e salvas como URLs no registro do jogo. O bucket precisa existir e a coluna `screenshots` precisa ser criada pelo SQL acima. **Catálogo:** os jogos são carregados do banco quando o usuário entra. Curtidas, visualizações, comentários e avaliação ainda ficam guardados no navegador de cada pessoa. O **tipo (2D/3D) vem do banco** (coluna `tipo`). Os links da Steam, GitHub e Discord não existem no banco, então aparecem só no navegador de quem cadastrou o jogo.
 
 **Estúdio no banco:** o jogo guarda `id_desenvolvedor`, que é o id do usuário na tabela `desenvolvedores`. Se um usuário virou desenvolvedor antes da integração e ainda não está nessa tabela, o front registra o estúdio automaticamente na primeira vez que ele cadastrar um jogo.
 
