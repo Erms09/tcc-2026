@@ -76,7 +76,7 @@ export function cadastrarDesenvolvedor({ idUsuario, nomeEstudio, bio }) {
 export const GAMES_API_ENABLED = import.meta.env.VITE_GAMES_API !== "false";
 
 export function cadastrarJogo({
-  title, description, version, price, coverFile, screenshots = [], downloadUrl, type, idGenero, idDesenvolvedor
+  title, description, version, price, coverFile, screenshots = [], platforms = [], downloadUrl, type, idGenero, idDesenvolvedor
 }) {
   const formData = new FormData();
   formData.append("nome", title);
@@ -89,6 +89,7 @@ export function cadastrarJogo({
   formData.append("tipo", type || "");
   formData.append("capa", coverFile);
   screenshots.forEach((file) => formData.append("screenshots", file));
+  formData.append("plataformas", JSON.stringify(platforms));
 
   return request("/jogos", {
     method: "POST",
