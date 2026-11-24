@@ -62,9 +62,10 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
           </div>
         </div>
         <div className="hero-art">
-          <div className="floating-card card-a">🎮<b>Projetos<br />indies</b></div>
-          <div className="floating-card card-b">★ <b>Feedback<br />da comunidade</b></div>
-          <div className="hero-orb">INDIE<br /><span>HUB</span></div>
+          <div className="hero-logo-glow" />
+          <img className="hero-logo" src="/indiehub-logo.svg" alt="IndieHub" />
+          <div className="hero-chip hero-chip-one">🎮 Projetos independentes</div>
+          <div className="hero-chip hero-chip-two">✦ Feito para quem joga e cria</div>
         </div>
       </section>
 
