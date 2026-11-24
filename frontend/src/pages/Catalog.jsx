@@ -16,8 +16,8 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
       .sort((a, b) => b.score - a.score);
   }, [gamesData]);
 
-  const highlightIds = useMemo(() => ranked.slice(0, 3).map((g) => g.id), [ranked]);
-  const trendingIds = useMemo(() => ranked.slice(3, 5).map((g) => g.id), [ranked]);
+  const highlightIds = useMemo(() => gamesData.filter((g) => g.isHighlight).map((g) => g.id), [gamesData]);
+  const trendingIds = useMemo(() => ranked.filter((g) => !highlightIds.includes(g.id)).slice(0, 2).map((g) => g.id), [ranked, highlightIds]);
 
   const filteredGames = useMemo(() => {
     return gamesData.filter((game) => {
