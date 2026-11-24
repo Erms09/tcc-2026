@@ -194,7 +194,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
               type="file"
               accept="image/png,image/jpeg,image/webp"
               multiple
-              onChange={(e) => updateField("screenshots", Array.from(e.target.files || []).slice(0, 6))}
+              onChange={(e) => updateField("screenshots", Array.from(e.target.files || []))}
             />
             <small className="field-hint">Selecione até 6 imagens (PNG, JPG ou WEBP, máximo 8 MB cada).</small>
             {form.screenshots.length > 0 && <small className="field-hint">{form.screenshots.length} arquivo(s) selecionado(s).</small>}
