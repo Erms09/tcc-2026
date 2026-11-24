@@ -18,6 +18,14 @@ server.use(devsRouter);
 server.use(jogosRouter);
 server.use(favoritosRouter);
 
+// Mensagens amigáveis para erros de upload do Multer.
+server.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err instanceof Error && (err.name === 'MulterError' || err.message.startsWith('Formato inválido'))) {
+    return res.status(400).json({ error: err.message });
+  }
+  return next(err);
+});
+
 supabase
   .from('usuarios')
   .select('id')
@@ -27,7 +35,6 @@ supabase
       console.error('Erro ao conectar com o Supabase:', error);
       return;
     }
-
     console.log('Supabase conectado! Dados:', data);
   });
 
