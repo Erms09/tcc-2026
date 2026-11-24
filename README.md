@@ -21,15 +21,10 @@ Crie o arquivo `backend/.env` com:
 
 ```
 SUPABASE_URL=<url do projeto no Supabase>
-SUPABASE_KEY=<chave do projeto com permissão de Storage>
+SUPABASE_KEY=<chave secreta service_role do projeto>
 ```
 
-No painel do Supabase, abra **Storage** e crie um bucket público chamado `game-media`. O bucket precisa permitir leitura pública; o back-end faz os envios usando `SUPABASE_KEY`. Na tabela `jogos`, adicione a coluna de screenshots executando uma vez no SQL Editor:
-
-```sql
-alter table public.jogos
-add column if not exists screenshots jsonb not null default '[]'::jsonb;
-```
+No Supabase, execute o arquivo `backend/sql/game-media.sql` no **SQL Editor**. Ele cria o bucket público `game-media` e adiciona a coluna `screenshots` à tabela `jogos`. Configure `SUPABASE_KEY` com a chave secreta `service_role` no arquivo `backend/.env` (somente no back-end, nunca no frontend).
 
 Depois:
 
