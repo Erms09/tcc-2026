@@ -475,6 +475,7 @@ export function AppProvider({ children }) {
   // Lança um erro (com mensagem) se o back-end recusar o cadastro.
   async function createGame(fields) {
     let remoteId = null;
+    let uploadedImages = {};
 
     if (GAMES_API_ENABLED) {
       const genre = genreOptions.find(
@@ -517,6 +518,10 @@ export function AppProvider({ children }) {
       }
 
       remoteId = response?.jogo?.id ?? null;
+      uploadedImages = {
+        coverUrl: response?.jogo?.url_capa || "",
+        screenshots: Array.isArray(response?.jogo?.screenshots) ? response.jogo.screenshots : [],
+      };
     }
 
     const newId =
@@ -528,6 +533,7 @@ export function AppProvider({ children }) {
       {
         id: newId,
         ...fields,
+        ...uploadedImages,
         remote: GAMES_API_ENABLED,
         rating: 0,
         isNew: true,
