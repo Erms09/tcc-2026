@@ -7,7 +7,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
   const { genreList } = useApp();
   const [form, setForm] = useState({
     title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-    version: "", price: "", coverUrl: "", downloadUrl: "",
+    version: "", price: "", coverFile: null, screenshots: [], downloadUrl: "",
     steam: "", github: "", discord: ""
   });
   const [serverError, setServerError] = useState("");
@@ -40,8 +40,8 @@ export default function Developer({ onCreateGame, currentUserName }) {
       const priceNumber = Number(form.price.replace(",", "."));
       if (!Number.isFinite(priceNumber) || priceNumber < 0) newErrors.price = "Digite um valor válido, ex.: 19,90 (ou deixe vazio se for grátis).";
     }
-    if (!form.coverUrl.trim()) newErrors.coverUrl = "Informe o link da imagem de capa.";
-    else if (!isValidUrl(form.coverUrl)) newErrors.coverUrl = "Link inválido. Use uma URL completa, ex.: https://...";
+    if (!form.coverFile) newErrors.coverFile = "Selecione uma imagem de capa.";
+    if (form.screenshots.length > 6) newErrors.screenshots = "Envie no máximo 6 screenshots.";
     if (!isValidUrl(form.downloadUrl)) newErrors.downloadUrl = "Link inválido. Use uma URL completa, ex.: https://...";
     if (form.description.trim().length < 10) newErrors.description = "Escreva pelo menos 10 caracteres na descrição.";
     if (!isValidUrl(form.steam)) newErrors.steam = "Link inválido. Use uma URL completa, ex.: https://...";
@@ -69,7 +69,8 @@ export default function Developer({ onCreateGame, currentUserName }) {
         description: form.description.trim(),
         version: form.version.trim(),
         price: form.price.trim() === "" ? 0 : Number(form.price.replace(",", ".")),
-        coverUrl: form.coverUrl.trim(),
+        coverFile: form.coverFile,
+        screenshots: form.screenshots,
         downloadUrl: form.downloadUrl.trim(),
         steam: form.steam || "https://store.steampowered.com/",
         github: form.github || "https://github.com/",
@@ -78,7 +79,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
       setSubmitted(true);
       setForm({
         title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-        version: "", price: "", coverUrl: "", downloadUrl: "",
+        version: "", price: "", coverFile: null, screenshots: [], downloadUrl: "",
         steam: "", github: "", discord: ""
       });
     } catch (err) {
@@ -175,17 +176,29 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.price && <span className="field-error" role="alert">{errors.price}</span>}
           </label>
 
-          <label>Imagem de capa (link)<span className="required-mark">*</span>
+          <label>Imagem de capa<span className="required-mark">*</span>
             <input
-              type="url"
-              placeholder="https://..."
-              value={form.coverUrl}
-              onChange={(e) => updateField("coverUrl", e.target.value)}
-              className={errors.coverUrl ? "input-error" : ""}
-              aria-invalid={Boolean(errors.coverUrl)}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={(e) => updateField("coverFile", e.target.files?.[0] || null)}
+              className={errors.coverFile ? "input-error" : ""}
+              aria-invalid={Boolean(errors.coverFile)}
             />
-            <small className="field-hint">Link direto para a imagem (png, jpg ou webp).</small>
-            {errors.coverUrl && <span className="field-error" role="alert">{errors.coverUrl}</span>}
+            <small className="field-hint">Escolha um arquivo PNG, JPG ou WEBP (máximo 8 MB).</small>
+            {form.coverFile && <small className="field-hint">Selecionado: {form.coverFile.name}</small>}
+            {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
+          </label>
+
+          <label>Screenshots do jogo
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              multiple
+              onChange={(e) => updateField("screenshots", Array.from(e.target.files || []).slice(0, 6))}
+            />
+            <small className="field-hint">Selecione até 6 imagens (PNG, JPG ou WEBP, máximo 8 MB cada).</small>
+            {form.screenshots.length > 0 && <small className="field-hint">{form.screenshots.length} arquivo(s) selecionado(s).</small>}
+            {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
           </label>
 
           <label>Link para baixar o jogo
