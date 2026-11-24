@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import { types } from "../data";
 import { useApp } from "../context/AppContext";
 
-export default function Developer({ onCreateGame, currentUserName }) {
-  const { genreList } = useApp();
-  const PLATFORM_OPTIONS = [
+const PLATFORM_OPTIONS = [
   { id: 1, name: "PC (Windows)" },
   { id: 2, name: "Linux" },
   { id: 3, name: "Mac" },
@@ -233,8 +231,6 @@ export default function Developer({ onCreateGame, currentUserName }) {
             </div>
             {errors.platforms && <span className="field-error" role="alert">{errors.platforms}</span>}
           </fieldset>
-            {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
-          </label>
 
           <label>Link para baixar o jogo
             <input
