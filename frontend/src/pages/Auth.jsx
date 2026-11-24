@@ -76,7 +76,7 @@ export default function Auth({ onLogin }) {
   return (
     <main className="auth-page">
       <div className="auth-side">
-        <div className="auth-orb">INDIE<br /><span>HUB</span></div>
+        <img className="auth-logo" src="/indiehub-logo.svg" alt="IndieHub" />
         <h2>Bem-vindo de volta.<br /><span>Ou comece agora.</span></h2>
         <p>
           Entre para acompanhar seus jogos favoritos, ou crie uma conta
@@ -87,8 +87,7 @@ export default function Auth({ onLogin }) {
       <div className="auth-card-wrap">
         <div className="auth-card">
           <div className="auth-brand">
-            <span className="brand-mark">◆</span>
-            <span>Indie<span>Hub</span></span>
+            <img src="/indiehub-logo.svg" alt="IndieHub" />
           </div>
 
           <div className="auth-tabs">
