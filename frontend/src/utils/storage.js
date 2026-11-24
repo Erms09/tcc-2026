@@ -21,25 +21,52 @@ function readKey(key) {
   return raw ? JSON.parse(raw) : null;
 }
 
+// Versões antigas guardavam notificações, favoritos e curtidas misturados entre
+// as contas do mesmo navegador. Como não dá para saber de quem era cada item,
+// eles são zerados uma única vez (os favoritos voltam do banco ao entrar).
+const ISOLATION_FLAG = "indiehub-isolation-v1";
+
+function cleanMixedAccountData(state) {
+  try {
+    if (localStorage.getItem(ISOLATION_FLAG)) return state;
+
+    localStorage.setItem(ISOLATION_FLAG, "1");
+    localStorage.removeItem("indiehub-user-data-v1");
+
+    if (!state) return state;
+
+    return {
+      ...state,
+      notifications: undefined, // volta só a boas-vindas
+      likedIds: [],
+      favorites: [],
+      visitedIds: [],
+      compareIds: [],
+    };
+  } catch {
+    return state;
+  }
+}
+
 export function loadStoredState() {
   try {
     const current = readKey(STORAGE_KEY);
-    if (current) return { ...EMPTY_STATE, ...current };
+    if (current) return cleanMixedAccountData({ ...EMPTY_STATE, ...current });
 
     // Migração: a versão antiga trazia jogos de exemplo. Mantém só o login
     // e as preferências, e descarta o restante.
     const old = readKey(OLD_STORAGE_KEY);
     if (old) {
       localStorage.removeItem(OLD_STORAGE_KEY);
-      return {
+      return cleanMixedAccountData({
         ...EMPTY_STATE,
         user: old.user || null,
         theme: old.theme || "dark",
         tourSeen: Boolean(old.tourSeen),
-      };
+      });
     }
 
-    return null;
+    return cleanMixedAccountData(null);
   } catch {
     return null;
   }
