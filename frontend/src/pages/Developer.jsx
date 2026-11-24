@@ -5,9 +5,21 @@ import { useApp } from "../context/AppContext";
 
 export default function Developer({ onCreateGame, currentUserName }) {
   const { genreList } = useApp();
+  const PLATFORM_OPTIONS = [
+  { id: 1, name: "PC (Windows)" },
+  { id: 2, name: "Linux" },
+  { id: 3, name: "Mac" },
+  { id: 4, name: "Android" },
+  { id: 7, name: "macOS" },
+  { id: 8, name: "Web" },
+  { id: 10, name: "Console" },
+];
+
+export default function Developer({ onCreateGame, currentUserName }) {
+  const { genreList } = useApp();
   const [form, setForm] = useState({
     title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-    version: "", price: "", coverFile: null, screenshots: [], downloadUrl: "",
+    version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
     steam: "", github: "", discord: ""
   });
   const [serverError, setServerError] = useState("");
@@ -41,7 +53,8 @@ export default function Developer({ onCreateGame, currentUserName }) {
       if (!Number.isFinite(priceNumber) || priceNumber < 0) newErrors.price = "Digite um valor válido, ex.: 19,90 (ou deixe vazio se for grátis).";
     }
     if (!form.coverFile) newErrors.coverFile = "Selecione uma imagem de capa.";
-    if (form.screenshots.length > 6) newErrors.screenshots = "Envie no máximo 6 screenshots.";
+    if (form.screenshots.length < 3 || form.screenshots.length > 5) newErrors.screenshots = "Selecione de 3 a 5 screenshots.";
+    if (form.platforms.length === 0) newErrors.platforms = "Selecione pelo menos uma plataforma.";
     if (!isValidUrl(form.downloadUrl)) newErrors.downloadUrl = "Link inválido. Use uma URL completa, ex.: https://...";
     if (form.description.trim().length < 10) newErrors.description = "Escreva pelo menos 10 caracteres na descrição.";
     if (!isValidUrl(form.steam)) newErrors.steam = "Link inválido. Use uma URL completa, ex.: https://...";
@@ -71,6 +84,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
         price: form.price.trim() === "" ? 0 : Number(form.price.replace(",", ".")),
         coverFile: form.coverFile,
         screenshots: form.screenshots,
+        platforms: form.platforms,
         downloadUrl: form.downloadUrl.trim(),
         steam: form.steam || "https://store.steampowered.com/",
         github: form.github || "https://github.com/",
@@ -79,7 +93,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
       setSubmitted(true);
       setForm({
         title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-        version: "", price: "", coverFile: null, screenshots: [], downloadUrl: "",
+        version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
         steam: "", github: "", discord: ""
       });
     } catch (err) {
@@ -196,8 +210,29 @@ export default function Developer({ onCreateGame, currentUserName }) {
               multiple
               onChange={(e) => updateField("screenshots", Array.from(e.target.files || []))}
             />
-            <small className="field-hint">Selecione até 6 imagens (PNG, JPG ou WEBP, máximo 8 MB cada).</small>
-            {form.screenshots.length > 0 && <small className="field-hint">{form.screenshots.length} arquivo(s) selecionado(s).</small>}
+            <small className="field-hint">Selecione de 3 a 5 imagens (PNG, JPG ou WEBP, máximo 8 MB cada).</small>
+            {form.screenshots.length > 0 && <small className="field-hint">{form.screenshots.length} de 5 screenshots selecionadas.</small>}
+            {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
+          </label>
+
+          <fieldset className="platform-fieldset">
+            <legend>Plataformas disponíveis<span className="required-mark">*</span></legend>
+            <div className="platform-options">
+              {PLATFORM_OPTIONS.map((platform) => (
+                <label className="platform-option" key={platform.id}>
+                  <input
+                    type="checkbox"
+                    checked={form.platforms.includes(platform.id)}
+                    onChange={(e) => updateField("platforms", e.target.checked
+                      ? [...form.platforms, platform.id]
+                      : form.platforms.filter((id) => id !== platform.id))}
+                  />
+                  <span>{platform.name}</span>
+                </label>
+              ))}
+            </div>
+            {errors.platforms && <span className="field-error" role="alert">{errors.platforms}</span>}
+          </fieldset>
             {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
           </label>
 
