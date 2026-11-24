@@ -189,6 +189,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
 
           <label>Imagem de capa<span className="required-mark">*</span>
             <input
+              key={form.coverFile?.name || "cover-empty"}
               type="file"
               accept="image/png,image/jpeg,image/webp"
               onChange={(e) => updateField("coverFile", e.target.files?.[0] || null)}
@@ -202,6 +203,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
 
           <label>Screenshots do jogo
             <input
+              key={form.screenshots.map((file) => file.name).join("|") || "screenshots-empty"}
               type="file"
               accept="image/png,image/jpeg,image/webp"
               multiple
