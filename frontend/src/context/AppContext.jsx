@@ -540,7 +540,7 @@ export function AppProvider({ children }) {
         ...uploadedImages,
         remote: GAMES_API_ENABLED,
         rating: 0,
-        isNew: true,
+        isNew: false,
         isHighlight: false,
         colors: palette,
         views: 0,
