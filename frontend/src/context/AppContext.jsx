@@ -199,6 +199,8 @@ export function AppProvider({ children }) {
             price: Number(row.preco) || 0,
             coverUrl: row.url_capa || "",
             screenshots: Array.isArray(row.screenshots) ? row.screenshots : [],
+            platforms: Array.isArray(row.plataformas) ? row.plataformas : [],
+            isHighlight: Boolean(row.destaque),
             downloadUrl: row.link_download || "",
             developer: row.estudio || "Desenvolvedor",
             genre: row.genero || "Sem gênero",
@@ -521,6 +523,8 @@ export function AppProvider({ children }) {
       uploadedImages = {
         coverUrl: response?.jogo?.url_capa || "",
         screenshots: Array.isArray(response?.jogo?.screenshots) ? response.jogo.screenshots : [],
+        platforms: Array.isArray(response?.jogo?.plataformas) ? response.jogo.plataformas : fields.platforms || [],
+        isHighlight: Boolean(response?.jogo?.destaque),
       };
     }
 
@@ -537,6 +541,7 @@ export function AppProvider({ children }) {
         remote: GAMES_API_ENABLED,
         rating: 0,
         isNew: true,
+        isHighlight: false,
         colors: palette,
         views: 0,
         likes: 0,
