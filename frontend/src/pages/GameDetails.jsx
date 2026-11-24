@@ -38,11 +38,10 @@ export default function GameDetails({
   const isFavorite = favorites.includes(game.id);
   const rating = Number(game.rating) || 0;
 
-  const screenshots = [
-    { label: "Visão do universo", colors },
-    { label: "Outro ângulo", colors: [colors[1], colors[0]] },
-    { label: "Exploração", colors: [colors[0], "#111113"] },
-  ];
+  const screenshots = (game.screenshots || []).map((url, index) => ({
+    url,
+    label: `Screenshot ${index + 1}`,
+  }));
 
   const similarGames = gamesData
     .filter(
@@ -279,57 +278,43 @@ export default function GameDetails({
         <span className="eyebrow">VISUAL DO JOGO</span>
         <h2>Galeria</h2>
         <p className="detail-section-description">
-          Confira diferentes composições visuais deste jogo.
+          {screenshots.length ? "Confira imagens reais enviadas pelo desenvolvedor." : "Este jogo ainda não possui screenshots cadastradas."}
         </p>
 
-        <div className="gallery-viewer">
-          <div
-            className="gallery-slide"
-            style={{
-              background: `linear-gradient(135deg, ${screenshots[screenshotIndex].colors[0]}, ${screenshots[screenshotIndex].colors[1]})`,
-            }}
-          >
-            <span>{screenshots[screenshotIndex].label}</span>
-          </div>
-
-          <button
-            className="gallery-nav gallery-prev"
-            onClick={() =>
-              setScreenshotIndex((index) =>
-                index === 0 ? screenshots.length - 1 : index - 1
-              )
-            }
-            type="button"
-            aria-label="Captura anterior"
-          >
-            ‹
-          </button>
-
-          <button
-            className="gallery-nav gallery-next"
-            onClick={() =>
-              setScreenshotIndex((index) =>
-                index === screenshots.length - 1 ? 0 : index + 1
-              )
-            }
-            type="button"
-            aria-label="Próxima captura"
-          >
-            ›
-          </button>
-        </div>
-
-        <div className="gallery-dots">
-          {screenshots.map((screenshot, index) => (
-            <button
-              key={screenshot.label}
-              className={`gallery-dot ${index === screenshotIndex ? "active" : ""}`}
-              onClick={() => setScreenshotIndex(index)}
-              type="button"
-              aria-label={`Ver ${screenshot.label}`}
+        {screenshots.length > 0 && <>
+          <div className="gallery-viewer">
+            <img
+              src={screenshots[screenshotIndex].url}
+              alt={screenshots[screenshotIndex].label}
+              className="gallery-image"
             />
-          ))}
-        </div>
+            {screenshots.length > 1 && <>
+              <button
+                className="gallery-nav gallery-prev"
+                onClick={() => setScreenshotIndex((index) => index === 0 ? screenshots.length - 1 : index - 1)}
+                type="button"
+                aria-label="Captura anterior"
+              >‹</button>
+              <button
+                className="gallery-nav gallery-next"
+                onClick={() => setScreenshotIndex((index) => index === screenshots.length - 1 ? 0 : index + 1)}
+                type="button"
+                aria-label="Próxima captura"
+              >›</button>
+            </>}
+          </div>
+          <div className="gallery-dots">
+            {screenshots.map((screenshot, index) => (
+              <button
+                key={screenshot.url}
+                className={`gallery-dot ${index === screenshotIndex ? "active" : ""}`}
+                onClick={() => setScreenshotIndex(index)}
+                type="button"
+                aria-label={`Ver ${screenshot.label}`}
+              />
+            ))}
+          </div>
+        </>}
       </section>
 
       {/* Comentários */}
