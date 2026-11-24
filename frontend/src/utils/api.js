@@ -4,8 +4,10 @@ async function request(path, options) {
   let response;
   try {
     response = await fetch(`${API_URL}${path}`, {
-      headers: { "Content-Type": "application/json" },
-      ...options
+      ...options,
+      headers: options?.body instanceof FormData
+        ? options.headers
+        : { "Content-Type": "application/json", ...options?.headers }
     });
   } catch {
     throw new Error("Não foi possível conectar ao servidor. Verifique se o back-end está rodando.");
