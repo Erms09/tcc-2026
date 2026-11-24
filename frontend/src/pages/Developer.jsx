@@ -6,9 +6,8 @@ import { useApp } from "../context/AppContext";
 const PLATFORM_OPTIONS = [
   { id: 1, name: "PC (Windows)" },
   { id: 2, name: "Linux" },
-  { id: 3, name: "Mac" },
   { id: 4, name: "Android" },
-  { id: 7, name: "macOS" },
+  { id: 7, name: "Mac" },
   { id: 8, name: "Web" },
   { id: 10, name: "Console" },
 ];
