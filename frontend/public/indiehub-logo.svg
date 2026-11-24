@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title">
+<title id="title">IndieHub</title>
+<defs>
+ <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08d7ff"/><stop offset=".55" stop-color="#087cff"/><stop offset="1" stop-color="#743cff"/></linearGradient>
+ <linearGradient id="violet" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#286bff"/><stop offset="1" stop-color="#b026ff"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g filter="url(#glow)">
+ <path d="M88 185 L115 75 L395 20 L395 170" fill="none" stroke="url(#blue)" stroke-width="18" stroke-linejoin="round"/>
+ <path d="M120 210 C145 105 220 115 280 105 C345 95 405 125 425 185 C440 235 395 295 340 315 L285 270 L190 295 C130 310 95 275 120 210Z" fill="#f7fbff" stroke="url(#blue)" stroke-width="13"/>
+ <path d="M185 170 V248 M146 209 H224" stroke="#061020" stroke-width="25" stroke-linecap="round"/>
+ <g fill="#061020"><circle cx="322" cy="170" r="14"/><circle cx="358" cy="194" r="14"/><circle cx="318" cy="220" r="14"/><circle cx="282" cy="194" r="14"/></g>
+ <path d="M52 260 C95 350 300 355 455 240 C510 198 520 160 488 145" fill="none" stroke="url(#violet)" stroke-width="22" stroke-linecap="round"/>
+</g>
+<text x="510" y="190" fill="#f8fbff" font-family="Arial, sans-serif" font-size="150" font-weight="900" font-style="italic" letter-spacing="-8">INDE</text>
+<text x="510" y="340" fill="url(#violet)" font-family="Arial, sans-serif" font-size="178" font-weight="900" font-style="italic" letter-spacing="-8">HUB</text>
+<path d="M510 375 H1125" stroke="url(#violet)" stroke-width="10"/>
+</svg>
