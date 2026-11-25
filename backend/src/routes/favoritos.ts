@@ -4,7 +4,7 @@ import { supabase } from '../config/supabase.js';
 const router = Router();
 
 // A tabela "bibliotecas" exige um status. Quem favorita um jogo entra na lista com este status.
-const STATUS_PADRAO = 'na_lista';
+const STATUS_PADRAO = 'quero_jogar';
 
 // Listar os ids dos jogos favoritos de um usuário
 router.get('/favoritos/:idUsuario', async (req: Request, res: Response) => {
@@ -43,35 +43,24 @@ router.put('/favoritos', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Informe id_usuario, id_jogo e favorito (true ou false).' });
     }
 
-    // A tabela não impede linhas repetidas, então procura antes de criar
-    const { data: existentes, error: erroBusca } = await supabase
-      .from('bibliotecas')
-      .select('id')
-      .eq('id_usuario', id_usuario)
-      .eq('id_jogo', id_jogo);
-
-    if (erroBusca) {
-      return res.status(400).json({ error: erroBusca.message });
-    }
-
-    if (existentes && existentes.length > 0) {
+    if (favorito) {
+      // A restrição única no banco impede favoritos duplicados.
       const { error } = await supabase
         .from('bibliotecas')
-        .update({ favorito })
+        .upsert(
+          { id_usuario, id_jogo, favorito: true, status: STATUS_PADRAO },
+          { onConflict: 'id_usuario,id_jogo' }
+        );
+
+      if (error) return res.status(400).json({ error: error.message });
+    } else {
+      const { error } = await supabase
+        .from('bibliotecas')
+        .update({ favorito: false })
         .eq('id_usuario', id_usuario)
         .eq('id_jogo', id_jogo);
 
-      if (error) {
-        return res.status(400).json({ error: error.message });
-      }
-    } else if (favorito) {
-      const { error } = await supabase
-        .from('bibliotecas')
-        .insert([{ id_usuario, id_jogo, favorito: true, status: STATUS_PADRAO }]);
-
-      if (error) {
-        return res.status(400).json({ error: error.message });
-      }
+      if (error) return res.status(400).json({ error: error.message });
     }
 
     return res.status(200).json({ favorito });
