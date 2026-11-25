@@ -178,9 +178,7 @@ export function AppProvider({ children }) {
           const old = previous.find((game) => game.remote && game.id === row.id);
           const base = old || {
             type: "",
-            steam: "",
-            github: "",
-            discord: "",
+            links: [],
             rating: 0,
             isNew: false,
             views: 0,
@@ -202,6 +200,7 @@ export function AppProvider({ children }) {
             platforms: Array.isArray(row.plataformas) ? row.plataformas : [],
             isHighlight: Boolean(row.destaque),
             downloadUrl: row.link_download || "",
+            links: Array.isArray(row.links) ? row.links : [],
             developer: row.estudio || "Desenvolvedor",
             genre: row.genero || "Sem gênero",
             colors: base.colors || PALETTES[row.id % PALETTES.length],
@@ -525,6 +524,7 @@ export function AppProvider({ children }) {
         screenshots: Array.isArray(response?.jogo?.screenshots) ? response.jogo.screenshots : [],
         platforms: Array.isArray(response?.jogo?.plataformas) ? response.jogo.plataformas : fields.platforms || [],
         isHighlight: Boolean(response?.jogo?.destaque),
+        links: Array.isArray(response?.jogo?.links) ? response.jogo.links : fields.links || [],
       };
     }
 
