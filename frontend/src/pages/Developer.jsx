@@ -23,6 +23,7 @@ function createInitialForm(currentUserName = "") {
     price: "",
     isFree: false,
     coverFile: null,
+    headerFile: null,
     screenshots: [null, null, null],
     platforms: [],
     links: [{ label: "", url: "" }],
@@ -66,7 +67,8 @@ export default function Developer({ onCreateGame, currentUserName }) {
         if (!Number.isFinite(priceNumber) || priceNumber <= 0) newErrors.price = "Digite um preço maior que zero ou marque Gratuito.";
       }
     }
-    if (!form.coverFile) newErrors.coverFile = "Selecione uma imagem de capa.";
+    if (!form.coverFile) newErrors.coverFile = "Selecione a capa vertical da biblioteca.";
+    if (!form.headerFile) newErrors.headerFile = "Selecione a capa horizontal do cabeçalho.";
     const selectedScreenshots = form.screenshots.filter(Boolean);
     if (selectedScreenshots.length < 3 || selectedScreenshots.length > 5) newErrors.screenshots = "Selecione pelo menos 3 screenshots (máximo de 5).";
     if (form.platforms.length === 0) newErrors.platforms = "Selecione pelo menos uma plataforma.";
@@ -98,6 +100,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
         version: form.version.trim(),
         price: form.isFree ? 0 : Number(form.price.replace(",", ".")),
         coverFile: form.coverFile,
+        headerFile: form.headerFile,
         screenshots: form.screenshots.filter(Boolean),
         platforms: form.platforms,
         downloadUrl: (form.links.find((link) => /^(baixar|download)$/i.test(link.label.trim()))?.url || "").trim(),
@@ -228,8 +231,8 @@ export default function Developer({ onCreateGame, currentUserName }) {
             </div>
             <label className="upload-card">
               <span className="upload-card-icon">▣</span>
-              <strong>Imagem de capa </strong>
-              <span className="upload-card-copy">Escolha a imagem principal que aparecerá no catálogo.</span>
+              <strong>Capa vertical (Biblioteca)</strong>
+              <span className="upload-card-copy">Imagem principal exibida na biblioteca, no formato de capa da Steam.</span>
               <input
                 key={form.coverFile?.name || "cover-empty"}
                 type="file"
@@ -238,9 +241,25 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 className={errors.coverFile ? "input-error" : ""}
                 aria-invalid={Boolean(errors.coverFile)}
               />
-              <small className="field-hint">Ideal: 1920 × 1080 px (16:9). PNG, JPG ou WEBP, até 8 MB.</small>
+              <small className="field-hint">Resolução recomendada: 600 × 900 px (2:3). PNG, JPG ou WEBP, até 8 MB.</small>
               {form.coverFile && <small className="file-selected">✓ {form.coverFile.name}</small>}
               {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
+            </label>
+            <label className="upload-card">
+              <span className="upload-card-icon">▰</span>
+              <strong>Capa horizontal (Cabeçalho)</strong>
+              <span className="upload-card-copy">Imagem larga usada como destaque no cabeçalho da página do jogo.</span>
+              <input
+                key={form.headerFile?.name || "header-empty"}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => updateField("headerFile", e.target.files?.[0] || null)}
+                className={errors.headerFile ? "input-error" : ""}
+                aria-invalid={Boolean(errors.headerFile)}
+              />
+              <small className="field-hint">Resolução recomendada: 920 × 430 px (aprox. 2.14:1). PNG, JPG ou WEBP, até 8 MB.</small>
+              {form.headerFile && <small className="file-selected">✓ {form.headerFile.name}</small>}
+              {errors.headerFile && <span className="field-error" role="alert">{errors.headerFile}</span>}
             </label>
             <div className="screenshots-upload-card">
               <div className="screenshots-upload-heading">
@@ -354,17 +373,17 @@ export default function Developer({ onCreateGame, currentUserName }) {
           )}
         </form>
 
-        <aside className="dev-card">
+        <aside className="dev-card automation-coming-soon">
           <span className="status-dot" />
+          <span className="automation-eyebrow">NOVIDADE A CAMINHO</span>
           <h3>Divulgação automatizada</h3>
+          <div className="coming-soon-label">Em breve...</div>
           <p>
-            O diferencial do projeto prevê uma IA integrada para publicar
-            automaticamente os jogos cadastrados no Instagram.
+            Estamos preparando uma ferramenta para divulgar os jogos cadastrados
+            automaticamente nas redes sociais. Em breve, seu projeto poderá ganhar
+            ainda mais visibilidade por aqui.
           </p>
-          <div className="automation-status">
-            <span>IA de divulgação</span><b>Planejada</b>
-          </div>
-          <small>A integração real com Instagram/IA será implementada no back-end.</small>
+          <small>Estamos trabalhando para trazer essa novidade ao IndieHub.</small>
         </aside>
       </div>
     </main>
