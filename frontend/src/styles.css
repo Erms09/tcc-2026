@@ -2722,3 +2722,48 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
  .link-entry-fields { grid-template-columns:1fr; }
 }
 @media(max-width:420px) { .platform-options { grid-template-columns:1fr; } }
+
+
+/* Avaliação e comentários persistidos dos jogos */
+.feedback-rating-picker {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 14px;
+  color: var(--white);
+}
+.feedback-rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.feedback-rating-stars button {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.7rem;
+  line-height: 1;
+  padding: 2px;
+  cursor: pointer;
+}
+.feedback-rating-stars button.active {
+  color: #fbbf24;
+}
+.feedback-rating-stars button:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+.feedback-rating-stars span {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+.feedback-login-hint {
+  color: var(--muted);
+  font-size: .85rem;
+}
+.comment-rating {
+  color: #fbbf24;
+  font-size: .82rem;
+  margin-top: 5px;
+}
