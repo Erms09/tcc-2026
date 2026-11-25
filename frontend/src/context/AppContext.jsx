@@ -634,7 +634,7 @@ export function AppProvider({ children }) {
         : savedNotifications
     );
 
-    if (showWelcome) markWelcomeSeen();
+    markWelcomeSeen();
     setLikedIds(saved?.likedIds || []);
     setFavorites(saved?.favorites || []);
     setVisitedIds(saved?.visitedIds || []);
