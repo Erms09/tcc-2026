@@ -3107,3 +3107,25 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
 @media (max-width: 680px) {
   .price-field { grid-column: 1; }
 }
+
+
+/* Capa única do IndieHub: proporção 490 × 215 em todas as telas. */
+.game-cover,
+.game-cover.large,
+.detail-cover-column .game-cover.large,
+.game-card-list .game-cover-wrap .game-cover,
+.ranking-cover .game-cover,
+.compare-col .game-cover,
+.assistant-rec .game-cover {
+  aspect-ratio: 490 / 215 !important;
+  height: auto !important;
+  min-height: 0;
+  width: 100%;
+}
+.game-cover > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+.detail-cover-column .game-cover.large { width: min(100%, 490px); }
+.detail-header-cover { display: none !important; }
