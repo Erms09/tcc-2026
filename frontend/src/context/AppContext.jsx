@@ -554,6 +554,7 @@ export function AppProvider({ children }) {
       remoteId = response?.jogo?.id ?? null;
       uploadedImages = {
         coverUrl: response?.jogo?.url_capa || "",
+        headerCoverUrl: response?.jogo?.url_capa_horizontal || "",
         screenshots: Array.isArray(response?.jogo?.screenshots) ? response.jogo.screenshots : [],
         platforms: Array.isArray(response?.jogo?.plataformas) ? response.jogo.plataformas : fields.platforms || [],
         isHighlight: Boolean(response?.jogo?.destaque),
