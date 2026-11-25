@@ -72,7 +72,6 @@ function createInitialForm(currentUserName = "") {
     price: "",
     isFree: false,
     coverFile: null,
-    headerFile: null,
     screenshots: [null, null, null],
     platforms: [],
     links: [{ label: "", url: "" }],
@@ -116,8 +115,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
         if (!Number.isFinite(priceNumber) || priceNumber <= 0) newErrors.price = "Digite um preço maior que zero ou marque Gratuito.";
       }
     }
-    if (!form.coverFile) newErrors.coverFile = "Selecione a capa vertical da biblioteca.";
-    if (!form.headerFile) newErrors.headerFile = "Selecione a capa horizontal do cabeçalho.";
+    if (!form.coverFile) newErrors.coverFile = "Selecione a capa do jogo.";
     const selectedScreenshots = form.screenshots.filter(Boolean);
     if (selectedScreenshots.length < 3 || selectedScreenshots.length > 5) newErrors.screenshots = "Selecione pelo menos 3 screenshots (máximo de 5).";
     if (form.platforms.length === 0) newErrors.platforms = "Selecione pelo menos uma plataforma.";
@@ -149,7 +147,6 @@ export default function Developer({ onCreateGame, currentUserName }) {
         version: form.version.trim(),
         price: form.isFree ? 0 : Number(form.price.replace(",", ".")),
         coverFile: form.coverFile,
-        headerFile: form.headerFile,
         screenshots: form.screenshots.filter(Boolean),
         platforms: form.platforms,
         downloadUrl: (form.links.find((link) => /^(baixar|download)$/i.test(link.label.trim()))?.url || "").trim(),
@@ -279,9 +276,9 @@ export default function Developer({ onCreateGame, currentUserName }) {
               <div><h2>Imagens do jogo</h2><p>Mostre seu jogo com imagens nítidas e bem enquadradas.</p></div>
             </div>
             <label className="upload-card">
-              <span className="upload-card-icon">▣</span>
-              <strong>Capa vertical (Biblioteca)</strong>
-              <span className="upload-card-copy">Imagem principal exibida na biblioteca, no formato de capa da Steam.</span>
+              <span className="upload-card-icon">▰</span>
+              <strong>Capa do jogo</strong>
+              <span className="upload-card-copy">Uma única capa será usada na biblioteca, no catálogo e na página do jogo.</span>
               <input
                 key={form.coverFile?.name || "cover-empty"}
                 type="file"
@@ -290,7 +287,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
                   const file = e.target.files?.[0] || null;
                   if (!file) return;
                   let adjusted;
-                  try { adjusted = await resizeImageToTarget(file, 600, 900); } catch (error) {
+                  try { adjusted = await resizeImageToTarget(file, 490, 215); } catch (error) {
                     setErrors((previous) => ({ ...previous, coverFile: error.message }));
                     e.target.value = "";
                     return;
@@ -301,36 +298,9 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 className={errors.coverFile ? "input-error" : ""}
                 aria-invalid={Boolean(errors.coverFile)}
               />
-              <small className="field-hint">Ajuste automático para 600 × 900 px. A imagem é recortada ao centro, sem deformar.</small>
+              <small className="field-hint">Ajuste automático para 490 × 215 px. A imagem é recortada ao centro, sem deformar.</small>
               {form.coverFile && <small className="file-selected">✓ {form.coverFile.name}</small>}
               {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
-            </label>
-            <label className="upload-card">
-              <span className="upload-card-icon">▰</span>
-              <strong>Capa horizontal (Cabeçalho)</strong>
-              <span className="upload-card-copy">Imagem larga usada como destaque no cabeçalho da página do jogo.</span>
-              <input
-                key={form.headerFile?.name || "header-empty"}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0] || null;
-                  if (!file) return;
-                  let adjusted;
-                  try { adjusted = await resizeImageToTarget(file, 1920, 720); } catch (error) {
-                    setErrors((previous) => ({ ...previous, headerFile: error.message }));
-                    e.target.value = "";
-                    return;
-                  }
-                  setErrors((previous) => ({ ...previous, headerFile: "" }));
-                  updateField("headerFile", adjusted);
-                }}
-                className={errors.headerFile ? "input-error" : ""}
-                aria-invalid={Boolean(errors.headerFile)}
-              />
-              <small className="field-hint">Ajuste automático para 1920 × 720 px. A imagem é recortada ao centro, sem deformar.</small>
-              {form.headerFile && <small className="file-selected">✓ {form.headerFile.name}</small>}
-              {errors.headerFile && <span className="field-error" role="alert">{errors.headerFile}</span>}
             </label>
             <div className="screenshots-upload-card">
               <div className="screenshots-upload-heading">
