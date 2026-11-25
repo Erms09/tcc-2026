@@ -101,7 +101,9 @@ export default function Developer({ onCreateGame, currentUserName }) {
         screenshots: form.screenshots.filter(Boolean),
         platforms: form.platforms,
         downloadUrl: (form.links.find((link) => /^(baixar|download)$/i.test(link.label.trim()))?.url || "").trim(),
-        links: form.links.filter((link) => link.url.trim()).map((link) => ({ label: link.label.trim() || "Acessar", url: link.url.trim() }))
+        links: form.links
+          .filter((link) => link.url.trim() && !/^(baixar|download)$/i.test(link.label.trim()))
+          .map((link) => ({ label: link.label.trim() || "Acessar", url: link.url.trim() }))
       });
       setSubmitted(true);
       setForm(createInitialForm(currentUserName));
