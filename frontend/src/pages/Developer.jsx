@@ -302,7 +302,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 )}
               </div>
               {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
-              <small className="field-hint">Formato PNG, JPG ou WEBP, até 8 MB por imagem. Máximo de 5 screenshots.</small>
+              <small className="field-hint">Resolução recomendada: 1920 × 1080 px (16:9). PNG, JPG ou WEBP, até 8 MB por imagem. Máximo de 5 screenshots.</small>
             </div>
           </section>
 
