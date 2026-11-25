@@ -26,6 +26,8 @@ import {
   listarGeneros,
   listarFavoritos,
   definirFavorito,
+  listarFeedbacks,
+  publicarFeedback,
   DEVELOPER_API_ENABLED,
   GAMES_API_ENABLED,
 } from "../utils/api";
@@ -159,10 +161,16 @@ export function AppProvider({ children }) {
         user?.id ? listarFavoritos(user.id).catch(() => null) : null,
       ]);
 
-      // Os favoritos do banco valem em qualquer navegador.
+      // Os favoritos e comentários vêm do banco e ficam iguais em qualquer dispositivo.
       if (favoritesResponse?.favoritos) {
-        setFavorites(favoritesResponse.favoritos);
+        setFavorites(favoritesResponse.favoritos.map(Number));
       }
+
+      const feedbackResponses = await Promise.all(
+        (gamesResponse.jogos || []).map((row) =>
+          listarFeedbacks(row.id).catch(() => ({ feedbacks: [] }))
+        )
+      );
 
       if (genresResponse?.generos) {
         setGenreOptions(
@@ -173,7 +181,7 @@ export function AppProvider({ children }) {
       }
 
       setGamesData((previous) =>
-        (gamesResponse.jogos || []).map((row) => {
+        (gamesResponse.jogos || []).map((row, index) => {
           // Só reaproveita dados locais de jogos que já vieram do servidor.
           const old = previous.find((game) => game.remote && game.id === row.id);
           const base = old || {
@@ -185,9 +193,15 @@ export function AppProvider({ children }) {
             likes: 0,
             comments: [],
           };
+          const comments = feedbackResponses[index]?.feedbacks || [];
+          const averageRating = comments.length
+            ? comments.reduce((total, item) => total + Number(item.nota || 0), 0) / comments.length
+            : Number(base.rating) || 0;
 
           return {
             ...base,
+            comments,
+            rating: averageRating,
             id: row.id,
             remote: true,
             title: row.nome,
@@ -382,12 +396,14 @@ export function AppProvider({ children }) {
   }
 
   function toggleFavorite(id) {
-    const wasFavorite = favorites.includes(id);
+    const wasFavorite = favorites.some((item) => String(item) === String(id));
     setFavorites((previous) =>
-      wasFavorite ? previous.filter((item) => item !== id) : [...previous, id]
+      wasFavorite
+        ? previous.filter((item) => String(item) !== String(id))
+        : [...previous, id]
     );
 
-    const favoriteGame = gamesData.find((item) => item.id === id);
+    const favoriteGame = gamesData.find((item) => String(item.id) === String(id));
 
     // Jogos que vieram do banco: grava o favorito lá também. Se falhar, desfaz.
     if (GAMES_API_ENABLED && user?.id && favoriteGame?.remote) {
@@ -395,8 +411,8 @@ export function AppProvider({ children }) {
         (error) => {
           setFavorites((previous) =>
             wasFavorite
-              ? previous.includes(id) ? previous : [...previous, id]
-              : previous.filter((item) => item !== id)
+              ? previous.some((item) => String(item) === String(id)) ? previous : [...previous, id]
+              : previous.filter((item) => String(item) !== String(id))
           );
           showToast(error.message || "Não foi possível salvar o favorito.", "error");
         }
@@ -439,38 +455,52 @@ export function AppProvider({ children }) {
     });
   }
 
-  function addComment(id, comment) {
+  async function addComment(id, comment) {
+    const game = gamesData.find((item) => String(item.id) === String(id));
+    if (!game) throw new Error("Não foi possível encontrar este jogo.");
+
+    let savedComment = comment;
+    if (game.remote && GAMES_API_ENABLED) {
+      if (!user?.id) throw new Error("Entre na sua conta para enviar um comentário.");
+      const response = await publicarFeedback({
+        idUsuario: user.id,
+        idJogo: game.id,
+        texto: comment.text,
+        nota: comment.nota,
+      });
+      savedComment = response.feedback;
+    }
+
     setGamesData((previous) =>
-      previous.map((game) =>
-        game.id === id
-          ? { ...game, comments: [...game.comments, comment] }
-          : game
-      )
+      previous.map((item) => {
+        if (String(item.id) !== String(id)) return item;
+        const comments = [...(item.comments || []), savedComment];
+        const rating = comments.length
+          ? comments.reduce((total, entry) => total + Number(entry.nota || 0), 0) / comments.length
+          : 0;
+        return { ...item, comments, rating };
+      })
     );
 
-    const game = gamesData.find((item) => item.id === id);
-    showToast("Comentário publicado!");
-
-    if (game) {
-      setActivity((previous) => [
-        {
-          type: "comment",
-          name: comment.name,
-          text: comment.text,
-          gameId: game.id,
-          gameTitle: game.title,
-          timeLabel: comment.timeLabel,
-        },
-        ...previous,
-      ]);
-
-      addNotification({
+    showToast("Feedback publicado!");
+    setActivity((previous) => [
+      {
         type: "comment",
-        title: "Comentário publicado",
-        message: `Seu comentário em ${game.title} foi publicado.`,
+        name: savedComment.name || comment.name,
+        text: savedComment.text || comment.text,
         gameId: game.id,
-      });
-    }
+        gameTitle: game.title,
+        timeLabel: savedComment.timeLabel || "agora mesmo",
+      },
+      ...previous,
+    ]);
+
+    addNotification({
+      type: "comment",
+      title: "Feedback publicado",
+      message: `Seu comentário em ${game.title} foi publicado.`,
+      gameId: game.id,
+    });
   }
 
   // Lança um erro (com mensagem) se o back-end recusar o cadastro.
