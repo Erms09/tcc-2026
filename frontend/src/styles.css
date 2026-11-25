@@ -3007,3 +3007,31 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
 
 
 .screenshots-upload-card { grid-column: 1 / -1; }
+
+
+.screenshot-slots .add-screenshot-button {
+  display: flex;
+  min-height: 142px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 15px;
+  border-style: dashed;
+  border-color: rgba(83, 150, 220, .55);
+  border-radius: 13px;
+  background: rgba(0, 132, 255, .06);
+  text-align: center;
+}
+.screenshot-slots .add-screenshot-button span {
+  font-size: 1.8rem;
+}
+.screenshot-slots .add-screenshot-button strong {
+  color: #9bdcff;
+  font-size: .84rem;
+}
+.screenshot-slots .add-screenshot-button small {
+  color: var(--muted);
+  font-size: .72rem;
+}
