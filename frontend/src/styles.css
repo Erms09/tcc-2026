@@ -3035,3 +3035,24 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
   color: var(--muted);
   font-size: .72rem;
 }
+
+
+.detail-header-cover {
+  display: block;
+  width: 100%;
+  max-height: 430px;
+  margin: 12px 0 28px;
+  aspect-ratio: 920 / 430;
+  border: 1px solid rgba(76, 145, 220, .3);
+  border-radius: 18px;
+  background: #050b16;
+  object-fit: cover;
+}
+/* A arte vertical fica reservada para as capas de biblioteca e catálogo. */
+.game-cover {
+  aspect-ratio: 2 / 3;
+}
+.game-cover > img { object-fit: cover !important; }
+@media (max-width: 680px) {
+  .detail-header-cover { margin-top: 8px; border-radius: 12px; }
+}
