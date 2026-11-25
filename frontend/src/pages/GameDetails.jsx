@@ -21,7 +21,7 @@ export default function GameDetails({
   const game = gamesData.find((item) => item.id === gameId);
 
   const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(5);
+  const [selectedRating, setSelectedRating] = useState(5);
   const [commentError, setCommentError] = useState("");
   const [sending, setSending] = useState(false);
   const [shared, setShared] = useState(false);
@@ -52,7 +52,7 @@ export default function GameDetails({
     )
     .slice(0, 3);
 
-  function addComment(event) {
+  async function addComment(event) {
     event.preventDefault();
 
     if (comment.trim().length < 3) {
@@ -73,11 +73,11 @@ export default function GameDetails({
         id: Date.now(),
         name: user.name,
         text: comment.trim(),
-        nota: rating,
+        nota: selectedRating,
         timeLabel: "agora mesmo",
       });
       setComment("");
-      setRating(5);
+      setSelectedRating(5);
     } catch (error) {
       setCommentError(error.message || "Não foi possível publicar seu feedback. Tente novamente.");
     } finally {
@@ -336,15 +336,15 @@ export default function GameDetails({
                 <button
                   key={value}
                   type="button"
-                  className={value <= rating ? "active" : ""}
-                  onClick={() => setRating(value)}
+                  className={value <= selectedRating ? "active" : ""}
+                  onClick={() => setSelectedRating(value)}
                   aria-label={`${value} estrela${value > 1 ? "s" : ""}`}
-                  aria-pressed={rating === value}
+                  aria-pressed={selectedRating === value}
                 >
                   ★
                 </button>
               ))}
-              <span>{rating}/5</span>
+              <span>{selectedRating}/5</span>
             </div>
           </div>
           {!user && <p className="feedback-login-hint">Entre na sua conta para avaliar e comentar.</p>}
