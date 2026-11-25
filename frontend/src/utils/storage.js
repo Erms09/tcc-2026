@@ -142,3 +142,24 @@ export function saveUserData(userId, data) {
     // sem espaço ou bloqueado: segue sem guardar
   }
 }
+
+
+// A experiência de boas-vindas é exibida apenas uma vez neste navegador,
+// mesmo que outras contas sejam cadastradas depois.
+const WELCOME_SEEN_KEY = "indiehub-welcome-seen-v1";
+
+export function hasSeenWelcome() {
+  try {
+    return localStorage.getItem(WELCOME_SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function markWelcomeSeen() {
+  try {
+    localStorage.setItem(WELCOME_SEEN_KEY, "1");
+  } catch {
+    // Se o navegador bloquear o armazenamento, o app continua funcionando.
+  }
+}
