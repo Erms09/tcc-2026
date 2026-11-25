@@ -211,6 +211,7 @@ export function AppProvider({ children }) {
             version: row.versao,
             price: Number(row.preco) || 0,
             coverUrl: row.url_capa || "",
+            headerCoverUrl: row.url_capa_horizontal || "",
             screenshots: Array.isArray(row.screenshots) ? row.screenshots : [],
             platforms: Array.isArray(row.plataformas) ? row.plataformas : [],
             isHighlight: Boolean(row.destaque),
