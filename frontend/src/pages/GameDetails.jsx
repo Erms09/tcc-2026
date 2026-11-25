@@ -105,6 +105,10 @@ export default function GameDetails({
       </Link>
 
       {/* Apresentação principal */}
+      {game.headerCoverUrl && (
+        <img className="detail-header-cover" src={game.headerCoverUrl} alt={`Capa horizontal de ${game.title}`} />
+      )}
+
       <section className="detail-hero detail-hero-upgraded">
         <div className="detail-cover-column">
           <GameCover game={game} large />
