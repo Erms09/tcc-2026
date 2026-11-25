@@ -12,21 +12,53 @@ const PLATFORM_OPTIONS = [
   { id: 10, name: "Console" },
 ];
 
-function hasExactImageSize(file, expectedWidth, expectedHeight) {
-  return new Promise((resolve) => {
-    const image = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    image.onload = () => {
-      const matches = image.naturalWidth === expectedWidth && image.naturalHeight === expectedHeight;
-      URL.revokeObjectURL(objectUrl);
-      resolve(matches);
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(false);
-    };
-    image.src = objectUrl;
-  });
+async function resizeImageToTarget(file, targetWidth, targetHeight) {
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await new Promise((resolve, reject) => {
+      const element = new Image();
+      element.onload = () => resolve(element);
+      element.onerror = () => reject(new Error("Não foi possível abrir essa imagem."));
+      element.src = objectUrl;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    const context = canvas.getContext("2d");
+
+    if (!context) throw new Error("Não foi possível ajustar essa imagem.");
+
+    // Preenche o formato de destino sem deformar a imagem, cortando apenas o excesso central.
+    const scale = Math.max(targetWidth / image.naturalWidth, targetHeight / image.naturalHeight);
+    const sourceWidth = targetWidth / scale;
+    const sourceHeight = targetHeight / scale;
+    const sourceX = (image.naturalWidth - sourceWidth) / 2;
+    const sourceY = (image.naturalHeight - sourceHeight) / 2;
+
+    context.drawImage(
+      image,
+      sourceX, sourceY, sourceWidth, sourceHeight,
+      0, 0, targetWidth, targetHeight
+    );
+
+    const blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (result) => result ? resolve(result) : reject(new Error("Não foi possível exportar a imagem.")),
+        "image/jpeg",
+        0.9
+      );
+    });
+
+    const safeName = file.name.replace(/\.[^.]+$/, "") || "imagem";
+    return new File([blob], `${safeName}-indiehub.jpg`, {
+      type: "image/jpeg",
+      lastModified: Date.now(),
+    });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 function createInitialForm(currentUserName = "") {
@@ -257,19 +289,19 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 onChange={async (e) => {
                   const file = e.target.files?.[0] || null;
                   if (!file) return;
-                  const valid = await hasExactImageSize(file, 600, 900);
-                  if (!valid) {
-                    setErrors((previous) => ({ ...previous, coverFile: "A capa vertical precisa ter exatamente 600 × 900 pixels." }));
+                  let adjusted;
+                  try { adjusted = await resizeImageToTarget(file, 600, 900); } catch (error) {
+                    setErrors((previous) => ({ ...previous, coverFile: error.message }));
                     e.target.value = "";
                     return;
                   }
                   setErrors((previous) => ({ ...previous, coverFile: "" }));
-                  updateField("coverFile", file);
+                  updateField("coverFile", adjusted);
                 }}
                 className={errors.coverFile ? "input-error" : ""}
                 aria-invalid={Boolean(errors.coverFile)}
               />
-              <small className="field-hint">Tamanho obrigatório: 600 × 900 px (2:3). PNG, JPG ou WEBP, até 8 MB.</small>
+              <small className="field-hint">Ajuste automático para 600 × 900 px. A imagem é recortada ao centro, sem deformar.</small>
               {form.coverFile && <small className="file-selected">✓ {form.coverFile.name}</small>}
               {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
             </label>
@@ -284,19 +316,19 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 onChange={async (e) => {
                   const file = e.target.files?.[0] || null;
                   if (!file) return;
-                  const valid = await hasExactImageSize(file, 920, 430);
-                  if (!valid) {
-                    setErrors((previous) => ({ ...previous, headerFile: "A capa horizontal precisa ter exatamente 920 × 430 pixels." }));
+                  let adjusted;
+                  try { adjusted = await resizeImageToTarget(file, 1920, 720); } catch (error) {
+                    setErrors((previous) => ({ ...previous, headerFile: error.message }));
                     e.target.value = "";
                     return;
                   }
                   setErrors((previous) => ({ ...previous, headerFile: "" }));
-                  updateField("headerFile", file);
+                  updateField("headerFile", adjusted);
                 }}
                 className={errors.headerFile ? "input-error" : ""}
                 aria-invalid={Boolean(errors.headerFile)}
               />
-              <small className="field-hint">Tamanho obrigatório: 920 × 430 px (aprox. 2.14:1). PNG, JPG ou WEBP, até 8 MB.</small>
+              <small className="field-hint">Ajuste automático para 1920 × 720 px. A imagem é recortada ao centro, sem deformar.</small>
               {form.headerFile && <small className="file-selected">✓ {form.headerFile.name}</small>}
               {errors.headerFile && <span className="field-error" role="alert">{errors.headerFile}</span>}
             </label>
@@ -321,14 +353,14 @@ export default function Developer({ onCreateGame, currentUserName }) {
                       onChange={async (e) => {
                         const file = e.target.files?.[0] || null;
                         if (!file) return;
-                        const valid = await hasExactImageSize(file, 1920, 1080);
-                        if (!valid) {
-                          setErrors((previous) => ({ ...previous, screenshots: "Cada screenshot precisa ter exatamente 1920 × 1080 pixels." }));
+                        let adjusted;
+                        try { adjusted = await resizeImageToTarget(file, 1920, 1080); } catch (error) {
+                          setErrors((previous) => ({ ...previous, screenshots: error.message }));
                           e.target.value = "";
                           return;
                         }
                         const next = [...form.screenshots];
-                        next[index] = file;
+                        next[index] = adjusted;
                         updateField("screenshots", next);
                         setErrors((previous) => ({ ...previous, screenshots: "" }));
                       }}
@@ -350,7 +382,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 )}
               </div>
               {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
-              <small className="field-hint">Tamanho obrigatório: 1920 × 1080 px (16:9). PNG, JPG ou WEBP, até 8 MB por imagem. Máximo de 5 screenshots.</small>
+              <small className="field-hint">Ajuste automático para 1920 × 1080 px (16:9). A imagem é recortada ao centro, sem deformar. Máximo de 5 screenshots.</small>
             </div>
           </section>
 
