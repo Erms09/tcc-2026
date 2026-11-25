@@ -5,6 +5,7 @@ import loginRouter from './routes/login.js';
 import devsRouter from './routes/devs.js';
 import jogosRouter from './routes/jogos.js';
 import favoritosRouter from './routes/favoritos.js';
+import feedbacksRouter from './routes/feedbacks.js';
 import { supabase } from './config/supabase.js';
 
 const server = express();
@@ -17,6 +18,7 @@ server.use(loginRouter);
 server.use(devsRouter);
 server.use(jogosRouter);
 server.use(favoritosRouter);
+server.use(feedbacksRouter);
 
 // Mensagens amigáveis para erros de upload do Multer.
 server.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
