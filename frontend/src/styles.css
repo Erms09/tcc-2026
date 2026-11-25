@@ -2767,3 +2767,240 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
   font-size: .82rem;
   margin-top: 5px;
 }
+
+
+
+/* Formulário de cadastro de jogos: preço, plataformas e screenshots */
+.price-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.price-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.price-field-heading > label:first-child {
+  color: #e7f1ff;
+  font-size: .9rem;
+  font-weight: 750;
+}
+.free-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid rgba(76, 190, 145, .35);
+  border-radius: 999px;
+  background: rgba(25, 135, 94, .12);
+  color: #a7f3d0;
+  font-size: .82rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.free-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #34d399;
+}
+.price-field > input:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.screenshots-upload-card {
+  min-width: 0;
+  padding: 19px;
+  border: 1px solid rgba(76, 145, 220, .3);
+  border-radius: 16px;
+  background: rgba(7, 19, 36, .55);
+}
+.screenshots-upload-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+.screenshots-upload-heading > div {
+  display: grid;
+  gap: 6px;
+}
+.screenshots-upload-heading strong {
+  color: #e7f1ff;
+  font-size: .93rem;
+}
+.screenshots-count {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(49, 156, 255, .35);
+  border-radius: 999px;
+  background: rgba(0, 132, 255, .12);
+  color: #8bdcff;
+  font-size: .78rem;
+  font-weight: 800;
+}
+.screenshot-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+.screenshot-slot {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 142px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  padding: 15px;
+  border: 1px dashed rgba(83, 150, 220, .55);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(12, 37, 66, .72), rgba(8, 20, 37, .85));
+  color: #e7f1ff;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.screenshot-slot:hover,
+.screenshot-slot:focus-within {
+  border-color: #168cff;
+  background: linear-gradient(145deg, rgba(0, 112, 220, .2), rgba(65, 39, 140, .16));
+}
+.screenshot-slot.has-file {
+  border-style: solid;
+  border-color: rgba(52, 211, 153, .5);
+  background: linear-gradient(145deg, rgba(13, 85, 68, .2), rgba(8, 20, 37, .85));
+}
+.screenshot-slot-number {
+  color: #65c9ff;
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+.screenshot-slot strong {
+  font-size: .86rem;
+}
+.screenshot-slot-action {
+  color: #8bdcff;
+  font-size: .78rem;
+  font-weight: 750;
+}
+.screenshot-slot .file-selected {
+  max-width: 100%;
+  color: #86efac;
+  font-size: .7rem;
+}
+.screenshot-slot input[type="file"] {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.screenshot-slot > * {
+  pointer-events: none;
+}
+.add-screenshot-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 13px;
+  padding: 9px 13px;
+  border: 1px solid rgba(49, 156, 255, .4);
+  border-radius: 10px;
+  background: rgba(0, 132, 255, .1);
+  color: #9bdcff;
+  font-size: .8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.add-screenshot-button:hover {
+  border-color: #168cff;
+  background: rgba(0, 132, 255, .2);
+}
+.add-screenshot-button span {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.platform-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.platform-option {
+  position: relative;
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 15px;
+  border: 1px solid rgba(83, 126, 177, .32);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #0d1d33, #091426);
+  color: #dbeafe;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.platform-option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, .65);
+}
+.platform-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+.platform-option span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .86rem;
+  font-weight: 700;
+}
+.platform-option span::before {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  place-items: center;
+  border: 1.5px solid #58708f;
+  border-radius: 6px;
+  background: #071326;
+  color: white;
+  content: "";
+  font-size: .78rem;
+  font-weight: 900;
+  transition: all .18s ease;
+}
+.platform-option:has(input:checked) {
+  border-color: #168cff;
+  background: linear-gradient(120deg, rgba(0, 132, 255, .2), rgba(112, 60, 255, .16));
+  box-shadow: inset 0 0 0 1px rgba(22, 140, 255, .16), 0 8px 20px rgba(0, 90, 200, .1);
+}
+.platform-option:has(input:checked) span::before {
+  border-color: #168cff;
+  background: linear-gradient(135deg, #087cff, #713cff);
+  content: "✓";
+}
+.platform-option:focus-within {
+  outline: 2px solid rgba(56, 189, 248, .75);
+  outline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .screenshot-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .platform-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .screenshot-slots,
+  .platform-options { grid-template-columns: 1fr; }
+  .screenshot-slot { min-height: 112px; }
+}
