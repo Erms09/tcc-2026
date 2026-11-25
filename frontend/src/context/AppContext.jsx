@@ -210,8 +210,7 @@ export function AppProvider({ children }) {
             type: row.tipo || base.type,
             version: row.versao,
             price: Number(row.preco) || 0,
-            coverUrl: row.url_capa || "",
-            headerCoverUrl: row.url_capa_horizontal || "",
+            coverUrl: row.url_capa || row.url_capa_horizontal || "",
             screenshots: Array.isArray(row.screenshots) ? row.screenshots : [],
             platforms: Array.isArray(row.plataformas) ? row.plataformas : [],
             isHighlight: Boolean(row.destaque),
@@ -555,7 +554,6 @@ export function AppProvider({ children }) {
       remoteId = response?.jogo?.id ?? null;
       uploadedImages = {
         coverUrl: response?.jogo?.url_capa || "",
-        headerCoverUrl: response?.jogo?.url_capa_horizontal || "",
         screenshots: Array.isArray(response?.jogo?.screenshots) ? response.jogo.screenshots : [],
         platforms: Array.isArray(response?.jogo?.plataformas) ? response.jogo.plataformas : fields.platforms || [],
         isHighlight: Boolean(response?.jogo?.destaque),
