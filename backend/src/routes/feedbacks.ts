@@ -26,13 +26,15 @@ router.get('/feedbacks/:idJogo', async (req: Request, res: Response) => {
 
     if (usersError) return res.status(400).json({ error: usersError.message });
 
-    const names = new Map((users ?? []).map((user: any) => [user.id, user.nome]));
+    const names = new Map<number, string>(
+      (users ?? []).map((user: any) => [Number(user.id), String(user.nome)] as [number, string])
+    );
     return res.status(200).json({
       feedbacks: (data ?? []).map((item: any) => ({
         id: item.id,
         text: item.texto_feedback,
         nota: item.nota,
-        name: names.get(item.id_usuario) || 'Usuário',
+        name: names.get(Number(item.id_usuario)) || 'Usuário',
         createdAt: item.created_at,
         timeLabel: new Date(item.created_at).toLocaleDateString('pt-BR'),
       })),
