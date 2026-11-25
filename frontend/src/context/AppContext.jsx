@@ -13,8 +13,9 @@ import {
   loadStoredState,
   loadDevProfile,
   saveDevProfile,
-  hasSeenTour,
   markTourSeenFor,
+  hasSeenWelcome,
+  markWelcomeSeen,
   loadUserData,
   saveUserData,
   STORAGE_KEY,
@@ -71,7 +72,7 @@ export function AppProvider({ children }) {
     stored ? stored.visitHistory || [] : []
   );
   const [notifications, setNotifications] = useState(() =>
-    stored?.notifications || welcomeNotifications()
+    stored?.notifications || []
   );
 
   const [likedIds, setLikedIds] = useState(() =>
@@ -92,7 +93,7 @@ export function AppProvider({ children }) {
 
   // O tour de boas-vindas aparece só na primeira vez de cada usuário.
   const [tourSeen, setTourSeen] = useState(() =>
-    stored ? Boolean(stored.tourSeen || (stored.user && hasSeenTour(stored.user.id))) : false
+    Boolean(stored?.tourSeen || hasSeenWelcome())
   );
 
   const [activity, setActivity] = useState(() => {
@@ -616,11 +617,24 @@ export function AppProvider({ children }) {
         ? { ...userData, role: "desenvolvedor", ...profile }
         : { ...userData, role: "jogador" }
     );
-    setTourSeen(hasSeenTour(userData.id));
-
-    // Cada conta tem os próprios dados. Conta nova começa só com a boas-vindas.
+    // A boas-vindas é global: aparece uma única vez neste navegador,
+    // não novamente sempre que uma nova conta for cadastrada.
     const saved = loadUserData(userData.id);
-    setNotifications(saved?.notifications || welcomeNotifications());
+    const savedNotifications = Array.isArray(saved?.notifications)
+      ? saved.notifications
+      : [];
+    const alreadyWelcomed = hasSeenWelcome() ||
+      savedNotifications.some((item) => item.type === "welcome");
+    const showWelcome = !alreadyWelcomed;
+
+    setTourSeen(!showWelcome);
+    setNotifications(
+      showWelcome
+        ? [...savedNotifications, ...welcomeNotifications()]
+        : savedNotifications
+    );
+
+    if (showWelcome) markWelcomeSeen();
     setLikedIds(saved?.likedIds || []);
     setFavorites(saved?.favorites || []);
     setVisitedIds(saved?.visitedIds || []);
@@ -629,6 +643,7 @@ export function AppProvider({ children }) {
 
   function markTourSeen() {
     setTourSeen(true);
+    markWelcomeSeen();
     if (user?.id) markTourSeenFor(user.id);
   }
 
