@@ -17,7 +17,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
   const [form, setForm] = useState({
     title: "", dev: currentUserName || "", genre: "", type: "", description: "",
     version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
-    steam: "", github: "", discord: ""
+    links: [{ label: "", url: "" }]
   });
   const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({});
@@ -54,9 +54,10 @@ export default function Developer({ onCreateGame, currentUserName }) {
     if (form.platforms.length === 0) newErrors.platforms = "Selecione pelo menos uma plataforma.";
     if (!isValidUrl(form.downloadUrl)) newErrors.downloadUrl = "Link inválido. Use uma URL completa, ex.: https://...";
     if (form.description.trim().length < 10) newErrors.description = "Escreva pelo menos 10 caracteres na descrição.";
-    if (!isValidUrl(form.steam)) newErrors.steam = "Link inválido. Use uma URL completa, ex.: https://...";
-    if (!isValidUrl(form.github)) newErrors.github = "Link inválido. Use uma URL completa, ex.: https://...";
-    if (!isValidUrl(form.discord)) newErrors.discord = "Link inválido. Use uma URL completa, ex.: https://...";
+    form.links.forEach((link, index) => {
+      if (link.url.trim() && !isValidUrl(link.url.trim())) newErrors[`link-${index}`] = "Informe uma URL completa, começando com https://.";
+      if (link.url.trim() && !link.label.trim()) newErrors[`link-label-${index}`] = "Dê um nome para este link.";
+    });
     return newErrors;
   }
 
@@ -83,15 +84,13 @@ export default function Developer({ onCreateGame, currentUserName }) {
         screenshots: form.screenshots,
         platforms: form.platforms,
         downloadUrl: form.downloadUrl.trim(),
-        steam: form.steam || "https://store.steampowered.com/",
-        github: form.github || "https://github.com/",
-        discord: form.discord || "https://discord.com/"
+        links: form.links.filter((link) => link.url.trim()).map((link) => ({ label: link.label.trim() || "Acessar", url: link.url.trim() }))
       });
       setSubmitted(true);
       setForm({
         title: "", dev: currentUserName || "", genre: "", type: "", description: "",
         version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
-        steam: "", github: "", discord: ""
+        links: [{ label: "", url: "" }]
       });
     } catch (err) {
       setServerError(err.message || "Não foi possível cadastrar o jogo. Tente novamente.");
@@ -187,32 +186,43 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.price && <span className="field-error" role="alert">{errors.price}</span>}
           </label>
 
-          <label>Imagem de capa<span className="required-mark">*</span>
-            <input
-              key={form.coverFile?.name || "cover-empty"}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              onChange={(e) => updateField("coverFile", e.target.files?.[0] || null)}
-              className={errors.coverFile ? "input-error" : ""}
-              aria-invalid={Boolean(errors.coverFile)}
-            />
-            <small className="field-hint">Escolha um arquivo PNG, JPG ou WEBP (máximo 8 MB).</small>
-            {form.coverFile && <small className="field-hint">Selecionado: {form.coverFile.name}</small>}
-            {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
-          </label>
-
-          <label>Screenshots do jogo
-            <input
-              key={form.screenshots.map((file) => file.name).join("|") || "screenshots-empty"}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              multiple
-              onChange={(e) => updateField("screenshots", Array.from(e.target.files || []))}
-            />
-            <small className="field-hint">Selecione de 3 a 5 imagens (PNG, JPG ou WEBP, máximo 8 MB cada).</small>
-            {form.screenshots.length > 0 && <small className="field-hint">{form.screenshots.length} de 5 screenshots selecionadas.</small>}
-            {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
-          </label>
+          <section className="media-upload-section">
+            <div className="form-section-heading">
+              <span className="form-section-icon">▧</span>
+              <div><h2>Imagens do jogo</h2><p>Mostre seu jogo com imagens nítidas e bem enquadradas.</p></div>
+            </div>
+            <label className="upload-card">
+              <span className="upload-card-icon">▣</span>
+              <strong>Imagem de capa <span className="required-mark">*</span></strong>
+              <span className="upload-card-copy">Escolha a imagem principal que aparecerá no catálogo.</span>
+              <input
+                key={form.coverFile?.name || "cover-empty"}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => updateField("coverFile", e.target.files?.[0] || null)}
+                className={errors.coverFile ? "input-error" : ""}
+                aria-invalid={Boolean(errors.coverFile)}
+              />
+              <small className="field-hint">Ideal: 1920 × 1080 px (16:9). PNG, JPG ou WEBP, até 8 MB.</small>
+              {form.coverFile && <small className="file-selected">✓ {form.coverFile.name}</small>}
+              {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
+            </label>
+            <label className="upload-card">
+              <span className="upload-card-icon">▧</span>
+              <strong>Screenshots do jogo <span className="required-mark">*</span></strong>
+              <span className="upload-card-copy">Selecione de 3 a 5 imagens reais da gameplay.</span>
+              <input
+                key={form.screenshots.map((file) => file.name).join("|") || "screenshots-empty"}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                onChange={(e) => updateField("screenshots", Array.from(e.target.files || []).slice(0, 5))}
+              />
+              <small className="field-hint">Ideal: 1920 × 1080 px (16:9). Selecione de 3 a 5 imagens, até 8 MB cada.</small>
+              {form.screenshots.length > 0 && <small className="file-selected">{form.screenshots.length} de 5 screenshots selecionadas.</small>}
+              {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
+            </label>
+          </section>
 
           <fieldset className="platform-fieldset">
             <legend>Plataformas disponíveis<span className="required-mark">*</span></legend>
@@ -245,38 +255,36 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.downloadUrl && <span className="field-error" role="alert">{errors.downloadUrl}</span>}
           </label>
 
-          <label>Link da Steam
-            <input
-              type="url"
-              placeholder="https://..."
-              value={form.steam}
-              onChange={(e) => updateField("steam", e.target.value)}
-              className={errors.steam ? "input-error" : ""}
-            />
-            {errors.steam && <span className="field-error" role="alert">{errors.steam}</span>}
-          </label>
-
-          <label>Link do GitHub
-            <input
-              type="url"
-              placeholder="https://..."
-              value={form.github}
-              onChange={(e) => updateField("github", e.target.value)}
-              className={errors.github ? "input-error" : ""}
-            />
-            {errors.github && <span className="field-error" role="alert">{errors.github}</span>}
-          </label>
-
-          <label>Link do Discord
-            <input
-              type="url"
-              placeholder="https://..."
-              value={form.discord}
-              onChange={(e) => updateField("discord", e.target.value)}
-              className={errors.discord ? "input-error" : ""}
-            />
-            {errors.discord && <span className="field-error" role="alert">{errors.discord}</span>}
-          </label>
+          <section className="links-editor">
+            <div className="links-editor-heading">
+              <div><h3>Links do jogo</h3><p>Adicione onde as pessoas podem conhecer, acompanhar ou baixar seu projeto.</p></div>
+              <button type="button" className="add-link-button" onClick={() => updateField("links", [...form.links, { label: "", url: "" }])} aria-label="Adicionar link">+</button>
+            </div>
+            {form.links.map((link, index) => (
+              <div className="link-entry" key={index}>
+                <div className="link-entry-fields">
+                  <input
+                    value={link.label}
+                    onChange={(e) => updateField("links", form.links.map((item, i) => i === index ? { ...item, label: e.target.value } : item))}
+                    placeholder="Nome do link (ex.: Steam, GitHub, Itch.io)"
+                    aria-label={`Nome do link ${index + 1}`}
+                  />
+                  <input
+                    type="url"
+                    value={link.url}
+                    onChange={(e) => updateField("links", form.links.map((item, i) => i === index ? { ...item, url: e.target.value } : item))}
+                    placeholder="Cole aqui o endereço (ex.: https://store.steampowered.com/...)"
+                    aria-label={`Endereço do link ${index + 1}`}
+                    className={errors[`link-${index}`] ? "input-error" : ""}
+                  />
+                </div>
+                {form.links.length > 1 && <button type="button" className="remove-link-button" onClick={() => updateField("links", form.links.filter((_, i) => i !== index))} aria-label="Remover link">×</button>}
+                {errors[`link-${index}`] && <span className="field-error">{errors[`link-${index}`]}</span>}
+                {errors[`link-label-${index}`] && <span className="field-error">{errors[`link-label-${index}`]}</span>}
+              </div>
+            ))}
+            <small className="field-hint">Você pode adicionar links da página do jogo, loja, repositório, comunidade ou redes sociais.</small>
+          </section>
 
           <div className="form-actions">
             <button className="primary-button" type="submit" disabled={loading}>
