@@ -63,7 +63,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
         newErrors.price = "Informe o preço ou marque a opção Gratuito.";
       } else {
         const priceNumber = Number(form.price.replace(",", "."));
-        if (!Number.isFinite(priceNumber) || priceNumber < 0) newErrors.price = "Digite um valor válido, ex.: 19,90.";
+        if (!Number.isFinite(priceNumber) || priceNumber <= 0) newErrors.price = "Digite um preço maior que zero ou marque Gratuito.";
       }
     }
     if (!form.coverFile) newErrors.coverFile = "Selecione uma imagem de capa.";
