@@ -12,13 +12,26 @@ const PLATFORM_OPTIONS = [
   { id: 10, name: "Console" },
 ];
 
+function createInitialForm(currentUserName = "") {
+  return {
+    title: "",
+    dev: currentUserName || "",
+    genre: "",
+    type: "",
+    description: "",
+    version: "",
+    price: "",
+    isFree: false,
+    coverFile: null,
+    screenshots: [null, null, null],
+    platforms: [],
+    links: [{ label: "", url: "" }],
+  };
+}
+
 export default function Developer({ onCreateGame, currentUserName }) {
   const { genreList } = useApp();
-  const [form, setForm] = useState({
-    title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-    version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
-    links: [{ label: "", url: "" }]
-  });
+  const [form, setForm] = useState(() => createInitialForm(currentUserName));
   const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -45,14 +58,18 @@ export default function Developer({ onCreateGame, currentUserName }) {
     if (!form.type) newErrors.type = "Selecione um tipo.";
     if (!form.version.trim()) newErrors.version = "Informe a versão, ex.: 1.0.0";
     else if (form.version.trim().length > 20) newErrors.version = "Use no máximo 20 caracteres.";
-    if (form.price.trim() !== "") {
-      const priceNumber = Number(form.price.replace(",", "."));
-      if (!Number.isFinite(priceNumber) || priceNumber < 0) newErrors.price = "Digite um valor válido, ex.: 19,90 (ou deixe vazio se for grátis).";
+    if (!form.isFree) {
+      if (form.price.trim() === "") {
+        newErrors.price = "Informe o preço ou marque a opção Gratuito.";
+      } else {
+        const priceNumber = Number(form.price.replace(",", "."));
+        if (!Number.isFinite(priceNumber) || priceNumber < 0) newErrors.price = "Digite um valor válido, ex.: 19,90.";
+      }
     }
     if (!form.coverFile) newErrors.coverFile = "Selecione uma imagem de capa.";
-    if (form.screenshots.length < 3 || form.screenshots.length > 5) newErrors.screenshots = "Selecione de 3 a 5 screenshots.";
+    const selectedScreenshots = form.screenshots.filter(Boolean);
+    if (selectedScreenshots.length < 3 || selectedScreenshots.length > 5) newErrors.screenshots = "Selecione pelo menos 3 screenshots (máximo de 5).";
     if (form.platforms.length === 0) newErrors.platforms = "Selecione pelo menos uma plataforma.";
-    if (!isValidUrl(form.downloadUrl)) newErrors.downloadUrl = "Link inválido. Use uma URL completa, ex.: https://...";
     if (form.description.trim().length < 10) newErrors.description = "Escreva pelo menos 10 caracteres na descrição.";
     form.links.forEach((link, index) => {
       if (link.url.trim() && !isValidUrl(link.url.trim())) newErrors[`link-${index}`] = "Informe uma URL completa, começando com https://.";
@@ -79,19 +96,15 @@ export default function Developer({ onCreateGame, currentUserName }) {
         type: form.type,
         description: form.description.trim(),
         version: form.version.trim(),
-        price: form.price.trim() === "" ? 0 : Number(form.price.replace(",", ".")),
+        price: form.isFree ? 0 : Number(form.price.replace(",", ".")),
         coverFile: form.coverFile,
-        screenshots: form.screenshots,
+        screenshots: form.screenshots.filter(Boolean),
         platforms: form.platforms,
-        downloadUrl: form.downloadUrl.trim(),
+        downloadUrl: (form.links.find((link) => /^(baixar|download)$/i.test(link.label.trim()))?.url || "").trim(),
         links: form.links.filter((link) => link.url.trim()).map((link) => ({ label: link.label.trim() || "Acessar", url: link.url.trim() }))
       });
       setSubmitted(true);
-      setForm({
-        title: "", dev: currentUserName || "", genre: "", type: "", description: "",
-        version: "", price: "", coverFile: null, screenshots: [], platforms: [], downloadUrl: "",
-        links: [{ label: "", url: "" }]
-      });
+      setForm(createInitialForm(currentUserName));
     } catch (err) {
       setServerError(err.message || "Não foi possível cadastrar o jogo. Tente novamente.");
     } finally {
@@ -109,7 +122,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
 
       <div className="developer-layout">
         <form className="dev-form" onSubmit={handleSubmit} noValidate>
-          <label>Nome do jogo<span className="required-mark">*</span>
+          <label>Nome do jogo
             <input
               placeholder="Ex.: Meu Jogo Indie"
               value={form.title}
@@ -128,7 +141,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
             <small className="field-hint">Vinculado automaticamente à sua conta.</small>
           </label>
 
-          <label>Gênero<span className="required-mark">*</span>
+          <label>Gênero
             <select
               value={form.genre}
               onChange={(e) => updateField("genre", e.target.value)}
@@ -140,7 +153,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.genre && <span className="field-error" role="alert">{errors.genre}</span>}
           </label>
 
-          <label>Tipo<span className="required-mark">*</span>
+          <label>Tipo
             <select
               value={form.type}
               onChange={(e) => updateField("type", e.target.value)}
@@ -152,7 +165,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.type && <span className="field-error" role="alert">{errors.type}</span>}
           </label>
 
-          <label>Descrição<span className="required-mark">*</span>
+          <label>Descrição
             <textarea
               placeholder="Conte um pouco sobre o jogo..."
               value={form.description}
@@ -162,7 +175,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.description && <span className="field-error" role="alert">{errors.description}</span>}
           </label>
 
-          <label>Versão<span className="required-mark">*</span>
+          <label>Versão
             <input
               placeholder="Ex.: 1.0.0"
               value={form.version}
@@ -174,17 +187,33 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.version && <span className="field-error" role="alert">{errors.version}</span>}
           </label>
 
-          <label>Preço (R$)
+          <div className="price-field">
+            <div className="price-field-heading">
+              <label htmlFor="game-price">Preço (R$)</label>
+              <label className="free-toggle">
+                <input
+                  type="checkbox"
+                  checked={form.isFree}
+                  onChange={(e) => {
+                    updateField("isFree", e.target.checked);
+                    if (e.target.checked) updateField("price", "");
+                  }}
+                />
+                <span>Gratuito</span>
+              </label>
+            </div>
             <input
+              id="game-price"
               inputMode="decimal"
-              placeholder="Deixe vazio se for gratuito"
+              placeholder="Ex.: 19,90"
               value={form.price}
+              disabled={form.isFree}
               onChange={(e) => updateField("price", e.target.value)}
               className={errors.price ? "input-error" : ""}
               aria-invalid={Boolean(errors.price)}
             />
             {errors.price && <span className="field-error" role="alert">{errors.price}</span>}
-          </label>
+          </div>
 
           <section className="media-upload-section">
             <div className="form-section-heading">
@@ -193,7 +222,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
             </div>
             <label className="upload-card">
               <span className="upload-card-icon">▣</span>
-              <strong>Imagem de capa <span className="required-mark">*</span></strong>
+              <strong>Imagem de capa </strong>
               <span className="upload-card-copy">Escolha a imagem principal que aparecerá no catálogo.</span>
               <input
                 key={form.coverFile?.name || "cover-empty"}
@@ -207,25 +236,51 @@ export default function Developer({ onCreateGame, currentUserName }) {
               {form.coverFile && <small className="file-selected">✓ {form.coverFile.name}</small>}
               {errors.coverFile && <span className="field-error" role="alert">{errors.coverFile}</span>}
             </label>
-            <label className="upload-card">
-              <span className="upload-card-icon">▧</span>
-              <strong>Screenshots do jogo <span className="required-mark">*</span></strong>
-              <span className="upload-card-copy">Selecione de 3 a 5 imagens reais da gameplay.</span>
-              <input
-                key={form.screenshots.map((file) => file.name).join("|") || "screenshots-empty"}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                multiple
-                onChange={(e) => updateField("screenshots", Array.from(e.target.files || []).slice(0, 5))}
-              />
-              <small className="field-hint">Ideal: 1920 × 1080 px (16:9). Selecione de 3 a 5 imagens, até 8 MB cada.</small>
-              {form.screenshots.length > 0 && <small className="file-selected">{form.screenshots.length} de 5 screenshots selecionadas.</small>}
+            <div className="screenshots-upload-card">
+              <div className="screenshots-upload-heading">
+                <div>
+                  <strong>Screenshots do jogo</strong>
+                  <span className="upload-card-copy">Escolha uma imagem por caixa. As três primeiras são obrigatórias.</span>
+                </div>
+                <span className="screenshots-count">{form.screenshots.filter(Boolean).length}/5</span>
+              </div>
+              <div className="screenshot-slots">
+                {form.screenshots.map((file, index) => (
+                  <label className={`screenshot-slot ${file ? "has-file" : ""}`} key={index}>
+                    <span className="screenshot-slot-number">{String(index + 1).padStart(2, "0")}</span>
+                    <strong>Screenshot {index + 1}</strong>
+                    <span className="screenshot-slot-action">{file ? "Trocar imagem" : "Selecionar imagem"}</span>
+                    <input
+                      key={file?.name || `empty-${index}`}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={(e) => {
+                        const next = [...form.screenshots];
+                        next[index] = e.target.files?.[0] || null;
+                        updateField("screenshots", next);
+                      }}
+                    />
+                    {file && <small className="file-selected">{file.name}</small>}
+                    {!file && <small className="field-hint">PNG, JPG ou WEBP</small>}
+                  </label>
+                ))}
+              </div>
+              {form.screenshots.length < 5 && (
+                <button
+                  type="button"
+                  className="add-screenshot-button"
+                  onClick={() => updateField("screenshots", [...form.screenshots, null])}
+                >
+                  <span>+</span> Adicionar outra screenshot
+                </button>
+              )}
               {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
-            </label>
+              <small className="field-hint">Formato PNG, JPG ou WEBP, até 8 MB por imagem. Máximo de 5 screenshots.</small>
+            </div>
           </section>
 
           <fieldset className="platform-fieldset">
-            <legend>Plataformas disponíveis<span className="required-mark">*</span></legend>
+            <legend>Plataformas disponíveis</legend>
             <div className="platform-options">
               {PLATFORM_OPTIONS.map((platform) => (
                 <label className="platform-option" key={platform.id}>
@@ -243,21 +298,9 @@ export default function Developer({ onCreateGame, currentUserName }) {
             {errors.platforms && <span className="field-error" role="alert">{errors.platforms}</span>}
           </fieldset>
 
-          <label>Link para baixar o jogo
-            <input
-              type="url"
-              placeholder="https://..."
-              value={form.downloadUrl}
-              onChange={(e) => updateField("downloadUrl", e.target.value)}
-              className={errors.downloadUrl ? "input-error" : ""}
-              aria-invalid={Boolean(errors.downloadUrl)}
-            />
-            {errors.downloadUrl && <span className="field-error" role="alert">{errors.downloadUrl}</span>}
-          </label>
-
           <section className="links-editor">
             <div className="links-editor-heading">
-              <div><h3>Links do jogo</h3><p>Adicione onde as pessoas podem conhecer, acompanhar ou baixar seu projeto.</p></div>
+              <div><h3>Links do jogo</h3><p>Adicione páginas, lojas, comunidades e outros endereços do seu jogo.</p></div>
               <button type="button" className="add-link-button" onClick={() => updateField("links", [...form.links, { label: "", url: "" }])} aria-label="Adicionar link">+</button>
             </div>
             {form.links.map((link, index) => (
@@ -283,7 +326,7 @@ export default function Developer({ onCreateGame, currentUserName }) {
                 {errors[`link-label-${index}`] && <span className="field-error">{errors[`link-label-${index}`]}</span>}
               </div>
             ))}
-            <small className="field-hint">Você pode adicionar links da página do jogo, loja, repositório, comunidade ou redes sociais.</small>
+            <small className="field-hint">Para que um link apareça como botão de download, use o nome “Download” ou “Baixar”.</small>
           </section>
 
           <div className="form-actions">
