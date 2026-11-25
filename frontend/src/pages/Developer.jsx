@@ -195,8 +195,12 @@ export default function Developer({ onCreateGame, currentUserName }) {
                   type="checkbox"
                   checked={form.isFree}
                   onChange={(e) => {
-                    updateField("isFree", e.target.checked);
-                    if (e.target.checked) updateField("price", "");
+                    const checked = e.target.checked;
+                    setForm((previous) => ({
+                      ...previous,
+                      isFree: checked,
+                      price: checked ? "" : previous.price,
+                    }));
                   }}
                 />
                 <span>Gratuito</span>
