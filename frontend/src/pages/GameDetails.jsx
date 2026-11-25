@@ -177,16 +177,7 @@ export default function GameDetails({
               </a>
             )}
 
-            {game.steam && (
-              <a
-                className="primary-button detail-play-button"
-                href={game.steam}
-                target="_blank"
-                rel="noreferrer"
-              >
-                🎮 Ver jogo ↗
-              </a>
-            )}
+
 
             <button
               className={`favorite-inline-btn ${isFavorite ? "active" : ""}`}
@@ -216,22 +207,12 @@ export default function GameDetails({
           </div>
 
           <div className="external-links detail-external-links">
-            {game.steam && (
-              <a href={game.steam} target="_blank" rel="noreferrer">
-                Steam ↗
+            {(game.links || []).map((link, index) => link.url ? (
+              <a key={index} href={link.url} target="_blank" rel="noreferrer">
+                {link.label || "Acessar"} ↗
               </a>
-            )}
-            {game.github && (
-              <a href={game.github} target="_blank" rel="noreferrer">
-                GitHub ↗
-              </a>
-            )}
-            {game.discord && (
-              <a href={game.discord} target="_blank" rel="noreferrer">
-                Discord ↗
-              </a>
-            )}
-          </div>
+            ) : null)}
+          </div>>
         </div>
       </section>
 
