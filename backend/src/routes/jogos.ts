@@ -67,6 +67,14 @@ router.post('/jogos', upload.fields([
       return res.status(400).json({ error: 'A seleção de plataformas é inválida.' });
     }
 
+    let gameLinks: { label: string; url: string }[] = [];
+    try {
+      const parsedLinks = JSON.parse(req.body.links || "[]");
+      gameLinks = Array.isArray(parsedLinks) ? parsedLinks.filter((link: any) => link && typeof link.url === "string" && link.url.trim()).map((link: any) => ({ label: String(link.label || "Acessar").slice(0, 60), url: link.url.trim() })) : [];
+    } catch {
+      return res.status(400).json({ error: "Os links informados são inválidos." });
+    }
+
     if (platformIds.length === 0) {
       return res.status(400).json({ error: 'Selecione pelo menos uma plataforma.' });
     }
@@ -101,6 +109,7 @@ router.post('/jogos', upload.fields([
         preco: Number(preco) || 0,
         url_capa: coverUrl,
         screenshots: screenshotUrls,
+        links: gameLinks,
         link_download: link_download || null,
         id_desenvolvedor,
         id_genero,
