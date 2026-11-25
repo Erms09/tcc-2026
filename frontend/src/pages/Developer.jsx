@@ -270,16 +270,18 @@ export default function Developer({ onCreateGame, currentUserName }) {
                     {!file && <small className="field-hint">PNG, JPG ou WEBP</small>}
                   </label>
                 ))}
+                {form.screenshots.length < 5 && (
+                  <button
+                    type="button"
+                    className="add-screenshot-button"
+                    onClick={() => updateField("screenshots", [...form.screenshots, null])}
+                  >
+                    <span>+</span>
+                    <strong>Adicionar</strong>
+                    <small>Mais uma screenshot</small>
+                  </button>
+                )}
               </div>
-              {form.screenshots.length < 5 && (
-                <button
-                  type="button"
-                  className="add-screenshot-button"
-                  onClick={() => updateField("screenshots", [...form.screenshots, null])}
-                >
-                  <span>+</span> Adicionar outra screenshot
-                </button>
-              )}
               {errors.screenshots && <span className="field-error" role="alert">{errors.screenshots}</span>}
               <small className="field-hint">Formato PNG, JPG ou WEBP, até 8 MB por imagem. Máximo de 5 screenshots.</small>
             </div>
