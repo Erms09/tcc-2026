@@ -21,6 +21,7 @@ export default function GameDetails({
   const game = gamesData.find((item) => item.id === gameId);
 
   const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(5);
   const [commentError, setCommentError] = useState("");
   const [sending, setSending] = useState(false);
   const [shared, setShared] = useState(false);
@@ -59,18 +60,29 @@ export default function GameDetails({
       return;
     }
 
+    if (!user) {
+      setCommentError("Entre na sua conta para enviar um feedback.");
+      return;
+    }
+
     setCommentError("");
     setSending(true);
 
-    onAddComment(game.id, {
-      id: Date.now(),
-      name: user ? user.name : "Visitante",
-      text: comment.trim(),
-      timeLabel: "agora mesmo",
-    });
-
-    setComment("");
-    setSending(false);
+    try {
+      await onAddComment(game.id, {
+        id: Date.now(),
+        name: user.name,
+        text: comment.trim(),
+        nota: rating,
+        timeLabel: "agora mesmo",
+      });
+      setComment("");
+      setRating(5);
+    } catch (error) {
+      setCommentError(error.message || "Não foi possível publicar seu feedback. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   async function handleShare() {
@@ -317,6 +329,25 @@ export default function GameDetails({
         </div>
 
         <form className="comment-form" onSubmit={addComment} noValidate>
+          <div className="feedback-rating-picker">
+            <strong>Sua nota para o jogo</strong>
+            <div className="feedback-rating-stars" role="group" aria-label="Escolha uma nota de 1 a 5">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={value <= rating ? "active" : ""}
+                  onClick={() => setRating(value)}
+                  aria-label={`${value} estrela${value > 1 ? "s" : ""}`}
+                  aria-pressed={rating === value}
+                >
+                  ★
+                </button>
+              ))}
+              <span>{rating}/5</span>
+            </div>
+          </div>
+          {!user && <p className="feedback-login-hint">Entre na sua conta para avaliar e comentar.</p>}
           <textarea
             value={comment}
             onChange={(event) => setComment(event.target.value)}
@@ -331,9 +362,9 @@ export default function GameDetails({
             <button
               className="primary-button"
               type="submit"
-              disabled={sending}
+              disabled={sending || !user}
             >
-              {sending ? "Enviando..." : "Enviar comentário"}
+              {sending ? "Enviando..." : "Enviar feedback"}
             </button>
           </div>
 
