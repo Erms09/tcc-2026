@@ -34,6 +34,7 @@ async function uploadImage(file: Express.Multer.File, folder: string) {
 // Cadastro de jogo: recebe capa, de 3 a 5 screenshots e plataformas selecionadas.
 router.post('/jogos', upload.fields([
   { name: 'capa', maxCount: 1 },
+  { name: 'capa_horizontal', maxCount: 1 },
   { name: 'screenshots', maxCount: 5 },
 ]), async (req: Request, res: Response) => {
   const uploadedPaths: string[] = [];
@@ -47,10 +48,11 @@ router.post('/jogos', upload.fields([
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
     const cover = files?.capa?.[0];
+    const headerCover = files?.capa_horizontal?.[0];
     const screenshotFiles = files?.screenshots ?? [];
 
-    if (!nome || !descricao || !versao || !cover || !id_desenvolvedor || !id_genero) {
-      return res.status(400).json({ error: 'Preencha todos os campos obrigatórios e selecione a capa.' });
+    if (!nome || !descricao || !versao || !cover || !headerCover || !id_desenvolvedor || !id_genero) {
+      return res.status(400).json({ error: 'Preencha todos os campos obrigatórios e selecione as capas vertical e horizontal.' });
     }
 
     if (screenshotFiles.length < 3 || screenshotFiles.length > 5) {
@@ -92,6 +94,8 @@ router.post('/jogos', upload.fields([
     const folder = `games/${id_desenvolvedor}`;
     const coverUrl = await uploadImage(cover, folder);
     uploadedPaths.push(coverUrl.split('/game-media/')[1]);
+    const headerCoverUrl = await uploadImage(headerCover, folder);
+    uploadedPaths.push(headerCoverUrl.split('/game-media/')[1]);
 
     const screenshotUrls: string[] = [];
     for (const file of screenshotFiles) {
@@ -108,6 +112,7 @@ router.post('/jogos', upload.fields([
         versao,
         preco: Number(preco) || 0,
         url_capa: coverUrl,
+        url_capa_horizontal: headerCoverUrl,
         screenshots: screenshotUrls,
         links: gameLinks,
         link_download: link_download || null,
