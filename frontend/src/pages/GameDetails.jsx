@@ -394,6 +394,12 @@ export default function GameDetails({
                     </span>
                   </div>
                   <p>{item.text}</p>
+                  {Number(item.nota) > 0 && (
+                    <div className="comment-rating" aria-label={`Nota ${item.nota} de 5`}>
+                      {"★".repeat(Number(item.nota))}{"☆".repeat(5 - Number(item.nota))}
+                      <span> {item.nota}/5</span>
+                    </div>
+                  )}
                 </div>
               </article>
             ))
