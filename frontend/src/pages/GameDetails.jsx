@@ -212,7 +212,7 @@ export default function GameDetails({
                 {link.label || "Acessar"} ↗
               </a>
             ) : null)}
-          </div>>
+          </div>
         </div>
       </section>
 
