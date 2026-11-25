@@ -2904,7 +2904,7 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
   opacity: 0;
   cursor: pointer;
 }
-.screenshot-slot > * {
+.screenshot-slot > *:not(input) {
   pointer-events: none;
 }
 .add-screenshot-button {
