@@ -207,7 +207,7 @@ export default function GameDetails({
           </div>
 
           <div className="external-links detail-external-links">
-            {(game.links || []).map((link, index) => link.url ? (
+            {(game.links?.length ? game.links : [game.steam && { label: "Steam", url: game.steam }, game.github && { label: "GitHub", url: game.github }, game.discord && { label: "Discord", url: game.discord }].filter(Boolean)).map((link, index) => link.url ? (
               <a key={index} href={link.url} target="_blank" rel="noreferrer">
                 {link.label || "Acessar"} ↗
               </a>
