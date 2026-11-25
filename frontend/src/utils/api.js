@@ -129,3 +129,23 @@ export function definirFavorito({ idUsuario, idJogo, favorito }) {
     })
   });
 }
+
+
+// ---------------------------------------------------------------------------
+// Feedbacks dos jogos (comentário + nota de 1 a 5 estrelas).
+// ---------------------------------------------------------------------------
+export function listarFeedbacks(idJogo) {
+  return request(`/feedbacks/${idJogo}`);
+}
+
+export function publicarFeedback({ idUsuario, idJogo, texto, nota }) {
+  return request("/feedbacks", {
+    method: "POST",
+    body: JSON.stringify({
+      id_usuario: idUsuario,
+      id_jogo: idJogo,
+      texto_feedback: texto,
+      nota,
+    }),
+  });
+}
