@@ -395,29 +395,34 @@ export function AppProvider({ children }) {
     setNotifications([]);
   }
 
-  function toggleFavorite(id) {
+  async function toggleFavorite(id) {
+    const favoriteGame = gamesData.find((item) => String(item.id) === String(id));
     const wasFavorite = favorites.some((item) => String(item) === String(id));
+
+    if (GAMES_API_ENABLED && !user?.id) {
+      showToast("Entre na sua conta para salvar seus favoritos.", "error");
+      return;
+    }
+
+    // Só confirma a alteração na tela depois que o servidor salvar.
+    if (GAMES_API_ENABLED && favoriteGame?.remote) {
+      try {
+        await definirFavorito({
+          idUsuario: user.id,
+          idJogo: favoriteGame.id,
+          favorito: !wasFavorite,
+        });
+      } catch (error) {
+        showToast(error.message || "Não foi possível salvar o favorito.", "error");
+        return;
+      }
+    }
+
     setFavorites((previous) =>
       wasFavorite
         ? previous.filter((item) => String(item) !== String(id))
         : [...previous, id]
     );
-
-    const favoriteGame = gamesData.find((item) => String(item.id) === String(id));
-
-    // Jogos que vieram do banco: grava o favorito lá também. Se falhar, desfaz.
-    if (GAMES_API_ENABLED && user?.id && favoriteGame?.remote) {
-      definirFavorito({ idUsuario: user.id, idJogo: id, favorito: !wasFavorite }).catch(
-        (error) => {
-          setFavorites((previous) =>
-            wasFavorite
-              ? previous.some((item) => String(item) === String(id)) ? previous : [...previous, id]
-              : previous.filter((item) => String(item) !== String(id))
-          );
-          showToast(error.message || "Não foi possível salvar o favorito.", "error");
-        }
-      );
-    }
 
     showToast(
       wasFavorite
@@ -425,16 +430,13 @@ export function AppProvider({ children }) {
         : `${favoriteGame ? favoriteGame.title : "Jogo"} adicionado aos favoritos.`
     );
 
-    if (!wasFavorite) {
-      const game = favoriteGame;
-      if (game) {
-        addNotification({
-          type: "favorite",
-          title: "Jogo adicionado aos favoritos",
-          message: `${game.title} agora está na sua lista de favoritos.`,
-          gameId: game.id,
-        });
-      }
+    if (!wasFavorite && favoriteGame) {
+      addNotification({
+        type: "favorite",
+        title: "Jogo adicionado aos favoritos",
+        message: `${favoriteGame.title} agora está na sua lista de favoritos.`,
+        gameId: favoriteGame.id,
+      });
     }
   }
 
