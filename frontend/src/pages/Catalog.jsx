@@ -10,15 +10,6 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
   const [type, setType] = useState("Todos");
   const [view, setView] = useState("grid");
 
-  const ranked = useMemo(() => {
-    return [...gamesData]
-      .map((g) => ({ ...g, score: g.likes * 2 + g.views }))
-      .sort((a, b) => b.score - a.score);
-  }, [gamesData]);
-
-  const highlightIds = useMemo(() => gamesData.filter((g) => g.isHighlight).map((g) => g.id), [gamesData]);
-  const trendingIds = useMemo(() => ranked.filter((g) => !highlightIds.includes(g.id)).slice(0, 2).map((g) => g.id), [ranked, highlightIds]);
-
   const filteredGames = useMemo(() => {
     return gamesData.filter((game) => {
       const matchesSearch =
@@ -35,11 +26,6 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
     const commentsCount = gamesData.reduce((total, g) => total + g.comments.length, 0);
     return { gamesCount: gamesData.length, developersCount, commentsCount };
   }, [gamesData]);
-
-  const highlightGames = useMemo(
-    () => ranked.filter((g) => highlightIds.includes(g.id)),
-    [ranked, highlightIds]
-  );
 
   return (
     <>
@@ -68,32 +54,6 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
           <div className="hero-chip hero-chip-two">✦ Feito para quem joga e cria</div>
         </div>
       </section>
-
-      {highlightGames.length > 0 && (
-        <section className="container highlight-section">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">DESTAQUES</span>
-              <h2>🔥 Destaques da semana</h2>
-              <p>Os jogos mais curtidos e visitados nos últimos dias.</p>
-            </div>
-          </div>
-          <div className="game-grid highlight-grid">
-            {highlightGames.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                view="grid"
-                isHighlight
-                isFavorite={favorites.includes(game.id)}
-                onToggleFavorite={onToggleFavorite}
-                isComparing={compareIds.includes(game.id)}
-                onToggleCompare={onToggleCompare}
-              />
-            ))}
-          </div>
-        </section>
-      )}
 
       <main className="container" id="catalogo">
         <section className="section-heading">
@@ -149,8 +109,6 @@ export default function Catalog({ gamesData, favorites, onToggleFavorite, compar
                 view={view}
                 isFavorite={favorites.includes(game.id)}
                 onToggleFavorite={onToggleFavorite}
-                isHighlight={highlightIds.includes(game.id)}
-                isTrending={trendingIds.includes(game.id)}
                 isComparing={compareIds.includes(game.id)}
                 onToggleCompare={onToggleCompare}
               />
