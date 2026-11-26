@@ -65,7 +65,7 @@ export default function Header({
   return (
     <header className="header">
       <Link to="/catalogo" className="brand" aria-label="IndieHub, página inicial">
-        <img src="/indiehub-logo.svg" alt="IndieHub" />
+        <img src="/logo-indiehub.png" alt="IndieHub" />
       </Link>
 
       <nav className="nav" aria-label="Navegação principal">
