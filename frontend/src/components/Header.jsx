@@ -73,9 +73,7 @@ export default function Header({
           Catálogo
         </NavLink>
         <NavLink to="/novidades">Novidades</NavLink>
-        <NavLink to="/ranking">Ranking</NavLink>
         <NavLink to="/favoritos">Favoritos</NavLink>
-        <NavLink to="/comunidade">Comunidade</NavLink>
 
         {user?.role === "desenvolvedor" && (
           <NavLink to="/dashboard">Dashboard</NavLink>
@@ -218,9 +216,7 @@ export default function Header({
         <nav className="mobile-nav" id="menu-mobile" aria-label="Menu principal">
           <NavLink to="/catalogo" end>Catálogo</NavLink>
           <NavLink to="/novidades">Novidades</NavLink>
-          <NavLink to="/ranking">Ranking</NavLink>
           <NavLink to="/favoritos">Favoritos</NavLink>
-          <NavLink to="/comunidade">Comunidade</NavLink>
           {user?.role === "desenvolvedor" && (
             <>
               <NavLink to="/dashboard">Dashboard</NavLink>
