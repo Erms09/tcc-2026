@@ -1,18 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title">
-<title id="title">IndieHub</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 682" role="img" aria-labelledby="title desc">
+<title id="title">IndieHub</title><desc id="desc">Logo IndieHub em branco e roxo com controle de videogame e tela pixelada</desc>
 <defs>
- <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08d7ff"/><stop offset=".55" stop-color="#087cff"/><stop offset="1" stop-color="#743cff"/></linearGradient>
- <linearGradient id="violet" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#286bff"/><stop offset="1" stop-color="#b026ff"/></linearGradient>
- <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e12cff"/><stop offset=".48" stop-color="#8b2cff"/><stop offset="1" stop-color="#4c18ec"/></linearGradient>
+ <linearGradient id="violet" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3c176d"/><stop offset="1" stop-color="#170d32"/></linearGradient>
+ <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#c9c3f5"/></linearGradient>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feGaussianBlur in="SourceAlpha" stdDeviation="8" result="blur"/><feOffset dy="8"/><feComponentTransfer><feFuncA type="linear" slope=".7"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
-<g filter="url(#glow)">
- <path d="M88 185 L115 75 L395 20 L395 170" fill="none" stroke="url(#blue)" stroke-width="18" stroke-linejoin="round"/>
- <path d="M120 210 C145 105 220 115 280 105 C345 95 405 125 425 185 C440 235 395 295 340 315 L285 270 L190 295 C130 310 95 275 120 210Z" fill="#f7fbff" stroke="url(#blue)" stroke-width="13"/>
- <path d="M185 170 V248 M146 209 H224" stroke="#061020" stroke-width="25" stroke-linecap="round"/>
- <g fill="#061020"><circle cx="322" cy="170" r="14"/><circle cx="358" cy="194" r="14"/><circle cx="318" cy="220" r="14"/><circle cx="282" cy="194" r="14"/></g>
- <path d="M52 260 C95 350 300 355 455 240 C510 198 520 160 488 145" fill="none" stroke="url(#violet)" stroke-width="22" stroke-linecap="round"/>
-</g>
-<text x="510" y="190" fill="#f8fbff" font-family="Arial, sans-serif" font-size="150" font-weight="900" font-style="italic" letter-spacing="-8">INDE</text>
-<text x="510" y="340" fill="url(#violet)" font-family="Arial, sans-serif" font-size="178" font-weight="900" font-style="italic" letter-spacing="-8">HUB</text>
-<path d="M510 375 H1125" stroke="url(#violet)" stroke-width="10"/>
-</svg>
+<g filter="url(#shadow)">
+ <path d="M105 205 560 65q58-18 76 43l66 247-93 65-105-39-258 91q-79 28-113-42-30-64-8-225 8-55 80-100Z" fill="url(#violet)" stroke="url(#purple)" stroke-width="23"/>
+ <path d="m148 211 393-120q39-12 49 27l44 173-86 49-105-32-239 85q-44 15-59-27-18-50 3-155Z" fill="#29104e" stroke="#080414" stroke-width="13"/>
+ <g fill="url(#purple)" opacity=".95">
+  <path d="M205 218h65v28h-65zM226 195h25v70h-25zM325 185h24v100h-24zM350 225h45v24h-45zM426 205h24v82h-24zM452 181h24v106h-24zM495 157h24v125h-24z"/>
+  <circle cx="440" cy="151" r="34" fill="#b77aff"/>
+ </g>
+ <path d="M156 318q23-76 94-87l91-13q35-5 58 24l47 61q25 31 62 18l54-20q54-20 83 31 32 57 17 111-13 48-66 65l-99 32q-41 13-73-15l-75-67q-27-24-57-8l-89 95q-42 45-94 15-43-25-46-82-3-74 93-160Z" fill="#08051a" stroke="url(#purple)" stroke-width="18"/>
+ <path d="M161 330q22-64 81-75l92-17q31-6 51 19l52 64q27 34 68 20l52-18q43-15 65 27 29 54 13 94-11 31-49 45l-92 32q-32 11-58-12l-81-72q-32-28-65 7l-74 79q-34 36-72 13-36-22-35-70 0-69 52-136Z" fill="url(#white)"/>
+ <path d="M211 378h85v31h-85zM238 351h31v85h-31z" fill="#090714"/>
+ <g fill="#090714"><circle cx="520" cy="309" r="19"/><circle cx="560" cy="334" r="19"/><circle cx="516" cy="355" r="19"/><circle cx="480" cy="333" r="19"/></g>
+ <g fill="url(#purple)"><path d="M65 300h36v36H65zM93 270h23v23H93zM590 114h35v35h-35zM638 167h27v27h-27zM665 111h23v23h-23zM384 540h36v36h-36zM351 588h24v24h-24z"/></g>
+ <path d="M710 455H1970" stroke="url(#purple)" stroke-width="19"/>
+ <path d="m1815 455 42-45h55l-42 45zm88 0 42-45h55l-42 45z" fill="url(#purple)"/>
+ <text x="690" y="402" font-family="Arial, Helvetica, sans-serif" font-size="285" font-weight="900" font-style="italic" letter-spacing="-18" fill="url(#white)" stroke="#090514" stroke-width="13" paint-order="stroke">Indie</text>
+ <text x="1365" y="402" font-family="Arial, Helvetica, sans-serif" font-size="285" font-weight="900" font-style="italic" letter-spacing="-18" fill="url(#purple)" stroke="#090514" stroke-width="13" paint-order="stroke">Hub</text>
+</g></svg>
