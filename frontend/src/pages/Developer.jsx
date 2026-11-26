@@ -241,21 +241,6 @@ export default function Developer({ onCreateGame, currentUserName }) {
           <div className="price-field">
             <div className="price-field-heading">
               <label htmlFor="game-price">Preço (R$)</label>
-              <label className="free-toggle">
-                <input
-                  type="checkbox"
-                  checked={form.isFree}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
-                    setForm((previous) => ({
-                      ...previous,
-                      isFree: checked,
-                      price: checked ? "" : previous.price,
-                    }));
-                  }}
-                />
-                <span>Gratuito</span>
-              </label>
             </div>
             <input
               id="game-price"
@@ -267,6 +252,21 @@ export default function Developer({ onCreateGame, currentUserName }) {
               className={errors.price ? "input-error" : ""}
               aria-invalid={Boolean(errors.price)}
             />
+            <label className="free-toggle">
+              <input
+                type="checkbox"
+                checked={form.isFree}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setForm((previous) => ({
+                    ...previous,
+                    isFree: checked,
+                    price: checked ? "" : previous.price,
+                  }));
+                }}
+              />
+              <span>Gratuito</span>
+            </label>
             {errors.price && <span className="field-error" role="alert">{errors.price}</span>}
           </div>
 
