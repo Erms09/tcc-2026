@@ -10,9 +10,9 @@
   --border: #29292e;
   --muted: #a1a1aa;
   --white: #fafafa;
-  --accent: #a855f7;
-  --accent-2: #ec4899;
-  --bg-glow: #26133d;
+  --accent: #8b2cf5;
+  --accent-2: #d326ff;
+  --bg-glow: #24103e;
   --panel-end: #0e0e10;
   --header-bg: rgba(9, 9, 11, .82);
 }
@@ -2501,8 +2501,8 @@ footer {
    INDIEHUB / IDENTIDADE VISUAL AZUL + VIOLETA
 ========================================= */
 :root {
-  --accent: #087cff;
-  --accent-2: #a32cff;
+  --accent: #8b2cf5;
+  --accent-2: #d326ff;
   --bg-glow: #071b3b;
   --panel: #0b1220;
   --panel-2: #101d31;
@@ -2524,8 +2524,8 @@ body {
   box-shadow: 0 8px 35px rgba(0, 0, 0, .18);
 }
 .brand { gap: 0; }
-.brand img { display: block; width: 168px; height: 58px; object-fit: contain; }
-.auth-brand img { width: 190px; max-width: 100%; height: 68px; object-fit: contain; }
+.brand img { display: block; width: 205px; height: 68px; object-fit: contain; }
+.auth-brand img { width: 235px; max-width: 100%; height: 78px; object-fit: contain; }
 .auth-logo {
   width: min(100%, 470px);
   height: auto;
@@ -2645,7 +2645,7 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
 .detail-studio-link, .history-empty a, .notification-game-link { color: #58bfff; }
 .detail-studio-link:hover { color: #b5e7ff; }
 @media (max-width: 850px) {
-  .brand img { width: 145px; }
+  .brand img { width: 170px; height: 58px; }
   .hero-art { height: 300px; }
 }
 @media (max-width: 600px) {
@@ -2654,7 +2654,7 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
   .hero-chip { font-size: .68rem; padding: 8px 10px; }
   .hero-chip-one { top: 0; }
   .hero-chip-two { bottom: 0; }
-  .brand img { width: 128px; height: 48px; }
+  .brand img { width: 145px; height: 50px; }
   .game-cover.large, .detail-cover-column .game-cover.large { aspect-ratio: 16 / 9; height: auto; }
 }
 
