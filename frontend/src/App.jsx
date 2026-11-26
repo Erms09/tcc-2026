@@ -19,10 +19,8 @@ const Catalog = lazy(() => import("./pages/Catalog"));
 const GameDetails = lazy(() => import("./pages/GameDetails"));
 const Developer = lazy(() => import("./pages/Developer"));
 const About = lazy(() => import("./pages/About"));
-const Ranking = lazy(() => import("./pages/Ranking"));
 const StudioProfile = lazy(() => import("./pages/StudioProfile"));
 const Favoritos = lazy(() => import("./pages/Favoritos"));
-const Comunidade = lazy(() => import("./pages/Comunidade"));
 const MeuPerfil = lazy(() => import("./pages/MeuPerfil"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Novidades = lazy(() => import("./pages/Novidades"));
@@ -34,9 +32,7 @@ const Notificacoes = lazy(() => import("./pages/Notificacoes"));
 const PAGE_TITLES = {
   "/catalogo": "Catálogo",
   "/novidades": "Novidades",
-  "/ranking": "Ranking",
   "/favoritos": "Favoritos",
-  "/comunidade": "Comunidade",
   "/historico": "Histórico",
   "/notificacoes": "Notificações",
   "/perfil": "Meu perfil",
@@ -164,11 +160,6 @@ export default function App() {
           />
 
           <Route
-            path="/ranking"
-            element={<Ranking gamesData={gamesData} />}
-          />
-
-          <Route
             path="/historico"
             element={
               <Historico
@@ -215,11 +206,6 @@ export default function App() {
                 onToggleFavorite={toggleFavorite}
               />
             }
-          />
-
-          <Route
-            path="/comunidade"
-            element={<Comunidade activity={activity} />}
           />
 
           <Route
