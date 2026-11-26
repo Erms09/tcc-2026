@@ -3172,3 +3172,38 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
 @media (max-width: 680px) {
   .dev-form .price-field-heading { min-height: 42px; }
 }
+
+
+/* Alinhamento dos campos Versão e Preço no cadastro */
+.dev-form .price-field {
+  align-self: start;
+  gap: 9px;
+}
+.dev-form .price-field-heading {
+  min-height: 0;
+  margin: 0;
+  justify-content: flex-start;
+}
+.dev-form .price-field-heading > label:first-child {
+  flex: none;
+}
+.dev-form .price-field > .free-toggle {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: flex-start;
+  width: fit-content;
+  min-height: 36px;
+  margin: 0;
+  gap: 8px;
+  padding: 7px 12px;
+}
+.dev-form .price-field > .free-toggle input[type="checkbox"] {
+  display: inline-block;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+}
