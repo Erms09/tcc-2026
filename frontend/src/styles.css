@@ -3129,3 +3129,46 @@ input:focus, select:focus, textarea:focus { border-color: #168cff; box-shadow: 0
 }
 .detail-cover-column .game-cover.large { width: min(100%, 490px); }
 .detail-header-cover { display: none !important; }
+
+
+/* Ajuste definitivo do campo de preço e da opção Gratuito */
+.dev-form .price-field { align-self: start; width: 100%; min-width: 0; }
+.dev-form .price-field-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  margin: 0 0 9px;
+}
+.dev-form .price-field-heading > label:first-child {
+  display: block;
+  flex: 1;
+  margin: 0;
+  line-height: 1.25;
+}
+.dev-form .price-field-heading .free-toggle {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  padding: 8px 13px;
+  white-space: nowrap;
+  flex: none;
+}
+.dev-form .price-field-heading .free-toggle input[type="checkbox"] {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+}
+.dev-form .price-field > input { display: block; width: 100%; min-height: 48px; margin: 0; }
+@media (max-width: 680px) {
+  .dev-form .price-field-heading { min-height: 42px; }
+}
