@@ -13,6 +13,10 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
+server.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 server.use(cadastroRouter);
 server.use(loginRouter);
 server.use(devsRouter);
@@ -40,6 +44,7 @@ supabase
     console.log('Supabase conectado! Dados:', data);
   });
 
-server.listen(3000, () => {
-  console.log('Servidor rodando em http://localhost:3000');
+const PORT = Number(process.env.PORT) || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
